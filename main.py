@@ -58,7 +58,7 @@ screens["network"] = NetworkScreen(LCD, screenManager)
 screens["slideshow"] = SlideshowScreen(LCD, screenManager)
 screens["cam"] = CamScreen(LCD, screenManager)
 
-screenManager.switchToScreen("network")
+screenManager.switchToScreen("main")
 screens[currentscreen].setVisible(True)
 
 def handle_key_event(input_pin): 
