@@ -8,6 +8,7 @@ from screen import Screen
 from menu_screen import MenuScreen
 from slideshow_screen import SlideshowScreen
 from network_screen import NetworkScreen
+from cam_screen import CamScreen
 
 KEY_UP_PIN     = 6 
 KEY_DOWN_PIN   = 19
@@ -31,7 +32,7 @@ GPIO.setup(KEY2_PIN,        GPIO.IN, pull_up_down=GPIO.PUD_UP)      # Input with
 GPIO.setup(KEY3_PIN,        GPIO.IN, pull_up_down=GPIO.PUD_UP)      # Input with pull-up
 
 LCD = LCD_1in44.LCD()
-print "**********Init LCD**********"
+print( "**********Init LCD**********")
 Lcd_ScanDir = LCD_1in44.SCAN_DIR_DFT  #SCAN_DIR_DFT = D2U_L2R
 LCD.LCD_Init(Lcd_ScanDir)
 LCD.LCD_Clear()
@@ -43,9 +44,10 @@ class ScreenManager(object):
     def switchToScreen(self, screen):
         global currentscreen
         global screens
-        screens[currentscreen].setVisible(False)
-        currentscreen = screen
-        screens[currentscreen].setVisible(True)
+        if screen in screens and screens[screen] is not None:
+            screens[currentscreen].setVisible(False)
+            currentscreen = screen
+            screens[currentscreen].setVisible(True)
 
 screenManager = ScreenManager()
 
@@ -54,15 +56,16 @@ currentscreen = "menu"
 screens["menu"] = MenuScreen(LCD, screenManager)
 screens["network"] = NetworkScreen(LCD, screenManager)
 screens["slideshow"] = SlideshowScreen(LCD, screenManager)
+screens["cam"] = CamScreen(LCD, screenManager)
 
-screenManager.switchToScreen("menu")
+screenManager.switchToScreen("cam")
 screens[currentscreen].setVisible(True)
 
 def handle_key_event(input_pin): 
     global currentscreen
     global screens
     global screenManager
-    print "handle_key_event %s currentscreen %s " %( input_pin, currentscreen)
+    print("handle_key_event %s currentscreen %s " %( input_pin, currentscreen))
     
     if input_pin == KEY_UP_PIN:
         if GPIO.input(KEY_UP_PIN) == 0:

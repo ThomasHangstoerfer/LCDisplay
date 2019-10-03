@@ -19,6 +19,14 @@ class MenuScreen(Screen):
         self.LCD = LCD
         self.screenManager = screenManager
         self.currentline = 0
+        self.entries = [
+            {"name": "SmartHome", "screenname": "smarthome"},
+            {"name": "Cam", "screenname": "cam"},
+            {"name": "Network", "screenname": "network"},
+            {"name": "Slideshow", "screenname": "slideshow"},
+            {"name": "Dilli", "screenname": ""},
+            {"name": "System", "screenname": ""}
+        ]
 
     def setVisible(self, visible):
         print("MenuScreen.setVisible(%s)" % visible)
@@ -47,31 +55,31 @@ class MenuScreen(Screen):
         #draw.rectangle([(1,1),(127,10)],fill = "RED")
 
         draw.text((40, 1), 'M E N U', fill = "BLUE")
-        #draw.text((1, 6), '--------------------', fill = "BLUE")
-        draw.text((1, 24), 'SmartHome', fill = ("BLACK" if (self.currentline==0) else "BLUE"))
-        draw.text((1, 36), 'Network', fill = ("BLACK" if (self.currentline==1) else "BLUE"))
-        draw.text((1, 48), 'Slideshow', fill = ("BLACK" if (self.currentline==2) else "BLUE"))
-        draw.text((1, 60), 'Dilli', fill = ("BLACK" if (self.currentline==3) else "BLUE"))
-        draw.text((1, 84), 'System (Shutdown, Reboot)', fill = ("BLACK" if (self.currentline==4) else "BLUE"))
+        draw.text((1, 6), '--------------------', fill = "BLUE")
+
+        y_offset = 24
+        for i in range(len(self.entries)):
+            if self.entries[i]["name"] != "":
+                draw.text((1, y_offset), self.entries[i]["name"], fill=("BLACK" if (self.currentline == i) else "BLUE"))
+            y_offset += 12
         draw.text((80, 118), datetime.datetime.now().strftime('%H:%M:%S'), fill = "BLUE")
-        
+
         self.LCD.LCD_ShowImage(image,0,0)
 
     def key(self, event):
         global screenManager
         print("MenuScreen.key(): %s" % event)
+        entry_count = len(self.entries)
         if ( event == "UP_RELEASED" ):
-            self.currentline = (self.currentline - 1 ) % 4
+            self.currentline = (self.currentline - 1 ) % entry_count
         if ( event == "DOWN_RELEASED" ):
-            self.currentline = (self.currentline + 1 ) % 4
+            self.currentline = (self.currentline + 1 ) % entry_count
         if ( event == "LEFT_RELEASED" ):
-            self.currentline = (self.currentline - 1 ) % 4
+            self.currentline = (self.currentline - 1 ) % entry_count
         if ( event == "RIGHT_RELEASED" ):
-            self.currentline = (self.currentline + 1 ) % 4
+            self.currentline = (self.currentline + 1 ) % entry_count
         if ( event == "JOYSTICK_RELEASED" ):
-            if ( self.currentline == 1):
-                self.screenManager.switchToScreen("network")
-            if ( self.currentline == 2):
-                self.screenManager.switchToScreen("slideshow")
+            if self.entries[self.currentline]["screenname"] != "":
+                self.screenManager.switchToScreen(self.entries[self.currentline]["screenname"])
         self.update()
 
