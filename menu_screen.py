@@ -15,7 +15,7 @@ from threading import Timer
 class MenuScreen(Screen):
     def __init__(self, LCD, screenManager):
         super(MenuScreen, self).__init__()
-        print("MenuScreen.MenuScreen() ")
+        #print("MenuScreen.MenuScreen() ")
         self.LCD = LCD
         self.screenManager = screenManager
         self.currentline = 0
@@ -46,7 +46,7 @@ class MenuScreen(Screen):
         self.update()
 
     def update(self):
-        print("MenuScreen.update() %s" % self.isVisible())
+        #print("MenuScreen.update() %s" % self.isVisible())
         if (not self.isVisible()):
             return
         #self.LCD.LCD_Clear()

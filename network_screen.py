@@ -16,11 +16,12 @@ import utils
 class NetworkScreen(Screen):
     def __init__(self, LCD, screenManager):
         super(NetworkScreen, self).__init__()
-        print("NetworkScreen.NetworkScreen() ")
+        #print("NetworkScreen.NetworkScreen() ")
         self.LCD = LCD
         self.screenManager = screenManager
         self.currentline = 0
         self.bitrate = 0
+        self.bitrate_unit = ""
         self.quality = 0
         self.essid = ""
 
@@ -42,7 +43,7 @@ class NetworkScreen(Screen):
         self.update()
 
     def update(self):
-        print("NetworkScreen.update() %s" % self.isVisible())
+        #print("NetworkScreen.update() %s" % self.isVisible())
         if (not self.isVisible()):
             return
         #self.LCD.LCD_Clear()
@@ -51,7 +52,7 @@ class NetworkScreen(Screen):
         #draw.rectangle([(1,1),(127,10)],fill = "RED")
 
         try:
-            self.bitrate, self.quality, self.essid = utils.get_network_info('wlan0')
+            self.bitrate, self.bitrate_unit, self.quality, self.essid = utils.get_network_info('wlan0')
 
             #print('WifiState update output: ' + output + ' raw: ', raw, ' quality: ', quality)
             #if ( self.quality < 20 ):
@@ -71,7 +72,7 @@ class NetworkScreen(Screen):
         draw.text((30, 1), 'N E T W O R K', fill = "BLUE")
         #draw.text((1, 6), '--------------------', fill = "BLUE")
         draw.text((1, 24), 'WiFi: ' + self.essid, fill = ("BLACK" if (self.currentline==0) else "BLUE"))
-        draw.text((1, 36), 'WiFi: ' + str(self.quality) + '% ' + str(self.bitrate), fill = ("BLACK" if (self.currentline==0) else "BLUE"))
+        draw.text((1, 36), 'WiFi: ' + str(self.quality) + '% ' + str(self.bitrate) + "" + self.bitrate_unit, fill = ("BLACK" if (self.currentline==0) else "BLUE"))
         draw.text((1, 48), 'IP: ' + utils.get_ip_address(), fill = ("BLACK" if (self.currentline==0) else "BLUE"))
         draw.text((80, 118), datetime.datetime.now().strftime('%H:%M:%S'), fill = "BLUE")
         

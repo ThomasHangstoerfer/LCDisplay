@@ -36,24 +36,27 @@ def get_ip_address():
 
 def get_network_info(wlan_device):
     #output = subprocess.check_output("iwconfig " + wlan_device + "|grep -e \"Bit Rate\" -e \"Quality\" |tr '\n' ' '|sed 's/ \\+/ /g'|cut -d' ' -f 2,3,8", shell=True, stderr=subprocess.STDOUT )
-    output = subprocess.check_output("iwconfig " + wlan_device + "|grep -e \"Bit Rate\" -e \"Quality\" -e \"ESSID\" |tr '\n' ' '|sed 's/ \\+/ /g'|cut -d' ' -f 4,6,11", shell=True, stderr=subprocess.STDOUT )
+    output = subprocess.check_output("iwconfig " + wlan_device + "|grep -e \"Bit Rate\" -e \"Quality\" -e \"ESSID\" |tr '\n' ' '|sed 's/ \\+/ /g'|cut -d' ' -f 4,6,7,11", shell=True, stderr=subprocess.STDOUT )
     #output = subprocess.check_output("ifconfig lo |grep 'RX packets'|tr '\n' ' '|sed 's/ \\+/ /g'|cut -d' ' -f 4", shell=True )
-    print('output = ' + output)
+    #print('output = ' + output)
     tokens1 = output.split()
-    print('tokens1 = ', tokens1)
-    print('tokens1[0] = ', tokens1[0].split('"'))
+    #print('tokens1 = ', tokens1)
+    #print('tokens1[0] = ', tokens1[0].split('"'))
     essid = tokens1[0].split('"')[1]
 
     bitrate = tokens1[1].split("=")[1]
+    bitrate_unit = tokens1[2]
     #bitrate = output[9:12]
 
+    #print("bitrate: %s" % bitrate)
+    #print("bitrate_unit: %s" % bitrate_unit)
     tokens = output.split()
-    raw = tokens1[2].split("=")[1]
+    raw = tokens1[3].split("=")[1]
     #raw = tokens[2][-5:]
     q = raw.split("/")[0]
     t = raw.split("/")[1]
     quality = ( int(q) * 100 ) / int(t)
-    return bitrate, quality, essid
+    return bitrate, bitrate_unit, quality, essid
 
 def running_on_pi():
     return os.path.isfile(bl_power_file)

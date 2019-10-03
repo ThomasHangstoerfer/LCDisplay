@@ -7,7 +7,7 @@ from PIL import Image,ImageDraw,ImageFont,ImageColor,ImageOps
 from screen import Screen
 from threading import Timer
 import os, sys
-
+import utils
 from os import listdir
 
 # duration is in seconds
@@ -17,16 +17,31 @@ from os import listdir
 class CamScreen(Screen):
     def __init__(self, LCD, screenManager):
         super(CamScreen, self).__init__()
-        print("CamScreen.CamScreen() ")
+        #print("CamScreen.CamScreen() ")
         self.LCD = LCD
+        self.isPlaying = False
         self.screenManager = screenManager
         self.currentimage = -1
         #self.images = ["murch.bmp", "time.bmp", "sky.bmp", "cam.bmp"]
+        self.timer = utils.RepeatedTimer(0.5, self.key, "LEFT_RELEASED") # it auto-starts, no need of rt.start()
+        self.timer.stop()
+
+    def setVisible(self, visible):
+        print("CamScreen.setVisible(%s)" % visible)
+        if (visible and not self.isVisible() ):
+            #self.timer.start()
+            #self.update()
+            pass
+        if (not visible and self.isVisible() ):
+            self.isPlaying = False
+            self.timer.stop()
+            pass
+        super(CamScreen, self).setVisible(visible)
 
 
 
     def update(self):
-        print("CamScreen.update() %s" % self.isVisible())
+        print("1CamScreen.update() %s" % self.isVisible())
         if (not self.isVisible()):
             return
         #image = Image.open(self.images[self.currentimage])
@@ -40,8 +55,6 @@ class CamScreen(Screen):
                 #img = PImage.open(path + image)
                 loadedImages.append(image)
             loadedImages.sort()
-            if self.currentimage == -1 or self.currentimage >= len(loadedImages):
-                self.currentimage = len(loadedImages)-1
         except:
             pass
         if len(loadedImages) <= 0:
@@ -50,6 +63,9 @@ class CamScreen(Screen):
             draw.text((35, 40), 'NO IMAGES', fill = "BLUE")
             self.LCD.LCD_ShowImage(image, 0, 0)
             return
+
+        if self.currentimage == -1 or self.currentimage >= len(loadedImages):
+            self.currentimage = len(loadedImages)-1
 
         print('Loading ' + path + loadedImages[self.currentimage])
         image = Image.open(path + loadedImages[self.currentimage])
@@ -74,6 +90,14 @@ class CamScreen(Screen):
             self.currentimage = (self.currentimage - 1 )
         if ( event == "RIGHT_RELEASED" ):
             self.currentimage = (self.currentimage + 1 )
+        if (event == "KEY2_RELEASED"):
+            if self.isPlaying:
+                self.timer.stop()
+            else:
+                self.timer.start()
+            self.isPlaying = not self.isPlaying
+        if (event == "KEY3_RELEASED"):
+            self.currentimage = -1
         if ( event == "JOYSTICK_RELEASED" ):
             self.screenManager.switchToScreen("menu")
         self.update()

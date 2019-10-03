@@ -15,14 +15,14 @@ from threading import Timer
 class SlideshowScreen(Screen):
     def __init__(self, LCD, screenManager):
         super(SlideshowScreen, self).__init__()
-        print("SlideshowScreen.SlideshowScreen() ")
+        #print("SlideshowScreen.SlideshowScreen() ")
         self.LCD = LCD
         self.screenManager = screenManager
         self.currentimage = 0
         self.images = ["murch.bmp", "time.bmp", "sky.bmp", "cam.bmp"]
 
     def update(self):
-        print("SlideshowScreen.update() %s" % self.isVisible())
+        #print("SlideshowScreen.update() %s" % self.isVisible())
         if (not self.isVisible()):
             return
         image = Image.open(self.images[self.currentimage])

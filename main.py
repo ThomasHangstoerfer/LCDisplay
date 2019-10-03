@@ -58,7 +58,7 @@ screens["network"] = NetworkScreen(LCD, screenManager)
 screens["slideshow"] = SlideshowScreen(LCD, screenManager)
 screens["cam"] = CamScreen(LCD, screenManager)
 
-screenManager.switchToScreen("cam")
+screenManager.switchToScreen("network")
 screens[currentscreen].setVisible(True)
 
 def handle_key_event(input_pin): 
@@ -115,7 +115,7 @@ def handle_key_event(input_pin):
         if GPIO.input(KEY2_PIN) == 0:
             print "Key2 pressed"
             screens[currentscreen].key('KEY2_PRESSED')
-            screenManager.switchToScreen("slideshow")
+            #screenManager.switchToScreen("slideshow")
             #image = Image.open('time.bmp')
             #LCD.LCD_ShowImage(image,0,0)
 
