@@ -3,6 +3,8 @@ import LCD_Config
 import datetime
 
 from PIL import Image,ImageDraw,ImageFont,ImageColor
+from themes import getTheme as getTheme
+from themes import changeTheme as changeTheme
 
 from screen import Screen
 from threading import Timer
@@ -24,6 +26,8 @@ class NetworkScreen(Screen):
         self.bitrate_unit = ""
         self.quality = 0
         self.essid = ""
+        self.big_font = ImageFont.truetype('/usr/share/fonts/truetype/freefont/FreeMonoBold.ttf', 15)
+
 
     def setVisible(self, visible):
         print("NetworkScreen.setVisible(%s)" % visible)
@@ -46,8 +50,8 @@ class NetworkScreen(Screen):
         #print("NetworkScreen.update() %s" % self.isVisible())
         if (not self.isVisible()):
             return
-        #self.LCD.LCD_Clear()
-        image = Image.new("RGB", (self.LCD.width, self.LCD.height), "WHITE")
+        #image = Image.new("RGB", (self.LCD.width, self.LCD.height), "WHITE")
+        image = getTheme()["background_image"].copy()
         draw = ImageDraw.Draw(image)
         #draw.rectangle([(1,1),(127,10)],fill = "RED")
 
@@ -69,12 +73,12 @@ class NetworkScreen(Screen):
 
 
 
-        draw.text((30, 1), 'N E T W O R K', fill = "BLUE")
-        #draw.text((1, 6), '--------------------', fill = "BLUE")
-        draw.text((1, 24), 'WiFi: ' + self.essid, fill = ("BLACK" if (self.currentline==0) else "BLUE"))
-        draw.text((1, 36), 'WiFi: ' + str(self.quality) + '% ' + str(self.bitrate) + "" + self.bitrate_unit, fill = ("BLACK" if (self.currentline==0) else "BLUE"))
-        draw.text((1, 48), 'IP: ' + utils.get_ip_address(), fill = ("BLACK" if (self.currentline==0) else "BLUE"))
-        draw.text((80, 118), datetime.datetime.now().strftime('%H:%M:%S'), fill = "BLUE")
+        draw.text((5, 1), 'N E T W O R K', fill = getTheme()["headline_color"], font = getTheme()["headlinefont"])
+        draw.line([(0,18),(127,18)], fill = getTheme()["headline_color"], width = 3)
+        draw.text((1, 24), self.essid, fill = getTheme()["highlight_text_color"], font = self.big_font)
+        draw.text((1, 42), 'Quality: ' + str(self.quality) + '% ' + str(self.bitrate) + "" + self.bitrate_unit, fill = ("BLACK" if (self.currentline==0) else "BLUE"))
+        draw.text((1, 54), 'IP: ' + utils.get_ip_address(), fill = ("BLACK" if (self.currentline==0) else "BLUE"))
+        draw.text((80, 118), datetime.datetime.now().strftime('%H:%M:%S'), fill = getTheme()["headline_color"])
         
         self.LCD.LCD_ShowImage(image,0,0)
 
