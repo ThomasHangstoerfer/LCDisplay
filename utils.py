@@ -5,7 +5,7 @@ from socket import socket, AF_INET, SOCK_DGRAM
 from threading import Timer
 import os
 import subprocess
-
+import sys
 bl_power_file = "/sys/class/backlight/rpi_backlight/bl_power"
 
 
@@ -33,6 +33,34 @@ def get_ip_address():
     s = socket(AF_INET, SOCK_DGRAM)
     s.connect(("8.8.8.8", 80))
     return s.getsockname()[0]
+
+def get_cpu_temp():
+    temp = ""
+    try:
+        output = subprocess.check_output("vcgencmd measure_temp", shell=True, stderr=subprocess.STDOUT )
+        temp = output.split("=")[1]
+    except:
+        pass
+    return temp
+
+
+def get_make_running():
+    #print("get_make_running()")
+    temp = "not running"
+    try:
+        output = subprocess.check_output("ps a|grep make|grep -v grep", shell=True, stderr=subprocess.STDOUT )
+
+        if len(output) > 0:
+            temp = "running"
+        #print(output)
+        #print(temp)
+    except:
+        print("except", sys.exc_info()[0])
+        pass
+    return temp
+
+
+
 
 def get_network_info(wlan_device):
     #output = subprocess.check_output("iwconfig " + wlan_device + "|grep -e \"Bit Rate\" -e \"Quality\" |tr '\n' ' '|sed 's/ \\+/ /g'|cut -d' ' -f 2,3,8", shell=True, stderr=subprocess.STDOUT )

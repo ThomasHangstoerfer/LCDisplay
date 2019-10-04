@@ -78,8 +78,11 @@ class NetworkScreen(Screen):
         draw.text((1, 24), self.essid, fill = getTheme()["highlight_text_color"], font = self.big_font)
         draw.text((1, 42), 'Quality: ' + str(self.quality) + '% ' + str(self.bitrate) + "" + self.bitrate_unit, fill = ("BLACK" if (self.currentline==0) else "BLUE"))
         draw.text((1, 54), 'IP: ' + utils.get_ip_address(), fill = ("BLACK" if (self.currentline==0) else "BLUE"))
+        draw.text((1, 66), 'CPU: ' + utils.get_cpu_temp(), fill = ("BLACK" if (self.currentline==0) else "BLUE"))
+        draw.text((1, 78), 'Make: ' + utils.get_make_running(), fill = "WHITE")
+
         draw.text((80, 118), datetime.datetime.now().strftime('%H:%M:%S'), fill = getTheme()["headline_color"])
-        
+
         self.LCD.LCD_ShowImage(image,0,0)
 
     def key(self, event):

@@ -1,8 +1,10 @@
 import LCD_1in44
 import LCD_Config
 import datetime
+import time
+import cv2
 
-from PIL import Image,ImageDraw,ImageFont,ImageColor
+from PIL import Image,ImageDraw,ImageFont,ImageColor,ImageOps
 
 from screen import Screen
 from threading import Timer
@@ -25,6 +27,7 @@ class SlideshowScreen(Screen):
         #print("SlideshowScreen.update() %s" % self.isVisible())
         if (not self.isVisible()):
             return
+
         image = Image.open(self.images[self.currentimage])
         self.LCD.LCD_ShowImage(image,0,0)
 

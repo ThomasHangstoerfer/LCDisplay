@@ -9,6 +9,7 @@ from menu_screen import MenuScreen
 from slideshow_screen import SlideshowScreen
 from network_screen import NetworkScreen
 from cam_screen import CamScreen
+from webcam_screen import WebcamScreen
 
 KEY_UP_PIN     = 6 
 KEY_DOWN_PIN   = 19
@@ -57,8 +58,10 @@ screens["menu"] = MenuScreen(LCD, screenManager)
 screens["network"] = NetworkScreen(LCD, screenManager)
 screens["slideshow"] = SlideshowScreen(LCD, screenManager)
 screens["cam"] = CamScreen(LCD, screenManager)
+screens["webcam"] = WebcamScreen(LCD, screenManager)
 
-screenManager.switchToScreen("main")
+screenManager.switchToScreen("menu")
+#screenManager.switchToScreen("webcam")
 screens[currentscreen].setVisible(True)
 
 def handle_key_event(input_pin): 

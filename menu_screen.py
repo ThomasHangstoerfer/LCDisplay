@@ -23,6 +23,7 @@ class MenuScreen(Screen):
         self.entries = [
             {"name": "SmartHome", "screenname": "smarthome"},
             {"name": "Cam", "screenname": "cam"},
+            {"name": "WebCam", "screenname": "webcam"},
             {"name": "Network", "screenname": "network"},
             {"name": "Slideshow", "screenname": "slideshow"},
             {"name": "Dilli", "screenname": ""},
