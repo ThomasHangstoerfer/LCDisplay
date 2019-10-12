@@ -47,6 +47,8 @@ class CamScreen(Screen):
         #image = Image.open(self.images[self.currentimage])
 
         path = "/qnap/Download/today/"
+        if not os.path.isdir(path):
+            path = "assets/cam/"
 
         loadedImages = []
         try:

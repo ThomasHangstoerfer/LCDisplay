@@ -21,7 +21,7 @@ class SlideshowScreen(Screen):
         self.LCD = LCD
         self.screenManager = screenManager
         self.currentimage = 0
-        self.images = ["murch.bmp", "time.bmp", "sky.bmp", "cam.bmp"]
+        self.images = ["assets/murch.bmp", "assets/time.bmp", "assets/sky.bmp", "assets/am.bmp"]
 
     def update(self):
         #print("SlideshowScreen.update() %s" % self.isVisible())

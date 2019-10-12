@@ -30,9 +30,14 @@ def setBacklight(on):
 
 
 def get_ip_address():
-    s = socket(AF_INET, SOCK_DGRAM)
-    s.connect(("8.8.8.8", 80))
-    return s.getsockname()[0]
+    sockname = ''
+    try:
+        s = socket(AF_INET, SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        sockname = s.getsockname()[0]
+    except:
+        print("Could not get IP-Adress")
+    return sockname
 
 def get_cpu_temp():
     temp = ""
