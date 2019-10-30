@@ -1,7 +1,10 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+
 import LCD_1in44
 import LCD_Config
 
-from PIL import Image,ImageDraw,ImageFont,ImageColor
+from PIL import Image, ImageDraw, ImageFont, ImageColor
 import RPi.GPIO as GPIO
 import time
 from screen import Screen
@@ -10,6 +13,7 @@ from slideshow_screen import SlideshowScreen
 from network_screen import NetworkScreen
 from cam_screen import CamScreen
 from webcam_screen import WebcamScreen
+from system_screen import SystemScreen
 
 KEY_UP_PIN     = 6 
 KEY_DOWN_PIN   = 19
@@ -33,7 +37,7 @@ GPIO.setup(KEY2_PIN,        GPIO.IN, pull_up_down=GPIO.PUD_UP)      # Input with
 GPIO.setup(KEY3_PIN,        GPIO.IN, pull_up_down=GPIO.PUD_UP)      # Input with pull-up
 
 LCD = LCD_1in44.LCD()
-print( "**********Init LCD**********")
+print("**********Init LCD**********")
 Lcd_ScanDir = LCD_1in44.SCAN_DIR_DFT  #SCAN_DIR_DFT = D2U_L2R
 LCD.LCD_Init(Lcd_ScanDir)
 LCD.LCD_Clear()
@@ -59,9 +63,11 @@ screens["network"] = NetworkScreen(LCD, screenManager)
 screens["slideshow"] = SlideshowScreen(LCD, screenManager)
 screens["cam"] = CamScreen(LCD, screenManager)
 screens["webcam"] = WebcamScreen(LCD, screenManager)
+screens["system"] = SystemScreen(LCD, screenManager)
 
-screenManager.switchToScreen("menu")
+#screenManager.switchToScreen("menu")
 #screenManager.switchToScreen("webcam")
+screenManager.switchToScreen("system")
 screens[currentscreen].setVisible(True)
 
 def handle_key_event(input_pin): 
@@ -73,64 +79,64 @@ def handle_key_event(input_pin):
     if input_pin == KEY_UP_PIN:
         if GPIO.input(KEY_UP_PIN) == 0:
             screens[currentscreen].key('UP_PRESSED')
-            print "Up pressed"        
+            print("Up pressed")
         else:
             screens[currentscreen].key('UP_RELEASED')
-            print "Up released"        
+            print("Up released")
     if input_pin == KEY_DOWN_PIN:
         if GPIO.input(KEY_DOWN_PIN) == 0:
             screens[currentscreen].key('DOWN_PRESSED')
-            print "Down pressed"        
+            print("Down pressed")
         else:
             screens[currentscreen].key('DOWN_RELEASED')
-            print "Down released"        
+            print("Down released")
     if input_pin == KEY_LEFT_PIN:
         if GPIO.input(KEY_LEFT_PIN) == 0:
             screens[currentscreen].key('LEFT_PRESSED')
-            print "Left pressed"        
+            print("Left pressed")
         else:
             screens[currentscreen].key('LEFT_RELEASED')
-            print "Left released"        
+            print("Left released")
     if input_pin == KEY_RIGHT_PIN:
         if GPIO.input(KEY_RIGHT_PIN) == 0:
             screens[currentscreen].key('RIGHT_PRESSED')
-            print "Right pressed"        
+            print("Right pressed")
         else:
             screens[currentscreen].key('RIGHT_RELEASED')
-            print "Right released"        
+            print("Right released")
     if input_pin == KEY_PRESS_PIN:
         if GPIO.input(KEY_PRESS_PIN) == 0:
             screens[currentscreen].key('JOYSTICK_PRESSED')
-            print "Joystick pressed"        
+            print("Joystick pressed")
         else:
             screens[currentscreen].key('JOYSTICK_RELEASED')
-            print "Joystick released"        
+            print("Joystick released")
     if input_pin == KEY1_PIN:
         if GPIO.input(KEY1_PIN) == 0:
-            print "Key1 pressed"        
+            print("Key1 pressed")
             screens[currentscreen].key('KEY1_PRESSED')
         else:
-            print "Key1 released"        
+            print("Key1 released")
             screens[currentscreen].key('KEY1_RELEASED')
             screenManager.switchToScreen("menu")
 
     if input_pin == KEY2_PIN:
         if GPIO.input(KEY2_PIN) == 0:
-            print "Key2 pressed"
+            print("Key2 pressed")
             screens[currentscreen].key('KEY2_PRESSED')
             #screenManager.switchToScreen("slideshow")
             #image = Image.open('time.bmp')
             #LCD.LCD_ShowImage(image,0,0)
 
         else:
-            print "Key2 released"        
+            print("Key2 released")
             screens[currentscreen].key('KEY2_RELEASED')
     if input_pin == KEY3_PIN:
         if GPIO.input(KEY3_PIN) == 0:
-            print "Key3 pressed"        
+            print("Key3 pressed")
             screens[currentscreen].key('KEY3_PRESSED')
         else:
-            print "Key3 released"        
+            print("Key3 released")
             screens[currentscreen].key('KEY3_RELEASED')
 
     screens[currentscreen].update()

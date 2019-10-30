@@ -19,6 +19,7 @@ class WebcamScreen(Screen):
     def __init__(self, LCD, screenManager):
         super(WebcamScreen, self).__init__()
         # print("WebcamScreen.WebcamScreen() ")
+        self.imagepath = '/home/pi/'
         self.LCD = LCD
         self.screenManager = screenManager
         self.currentimage = 0
@@ -27,14 +28,15 @@ class WebcamScreen(Screen):
         self.screenTimer = None
         self.updateCamTime = 5
         self.updateScreenTime = 1
-        self.isRecording = True
+        self.isRecording = False
         self.recordingIconVisible = False
         self.camimage = None
         self.menuselection = 0
         self.running = True
+        self.lastRecordingStatus = 0
 
     def stop(self):
-        print "STOP"
+        print("STOP")
         self.running = False
 
         self.camTimer.cancel()
@@ -44,6 +46,7 @@ class WebcamScreen(Screen):
 
     def setVisible(self, visible):
         print("WebcamScreen.setVisible(%s)" % visible)
+
         if visible and not self.isVisible():
             self.running = True
             self.showInitScreen()
@@ -51,22 +54,30 @@ class WebcamScreen(Screen):
             self.camTimer.start()
             self.screenTimer = Timer(self.updateScreenTime, self.updateScreenTimeout)
             self.screenTimer.start()
-            self.update()
             # camera_port = 0
             # self.camera = cv2.VideoCapture(camera_port)
             # time.sleep(0.1)  # If you don't wait, the image will be dark
-        if (not visible and self.isVisible()):
+        if not visible and self.isVisible():
             self.stop()
 
         super(WebcamScreen, self).setVisible(visible)
+
+        if visible and self.isVisible():
+            self.updateCam()
+            self.update()
+
+
+
+    def restartCamTimer(self):
+        self.camTimer.cancel()
+        self.camTimer = Timer(self.updateCamTime, self.updateCamTimeout)
+        self.camTimer.start()
 
     def updateCamTimeout(self):
         print("WebcamScreen.updateCamTimeout() %s" % self.isVisible())
         if not self.running:
             return
-        self.camTimer.cancel()
-        self.camTimer = Timer(self.updateCamTime, self.updateCamTimeout)
-        self.camTimer.start()
+        self.restartCamTimer()
         self.updateCam()
         self.update()
 
@@ -116,9 +127,11 @@ class WebcamScreen(Screen):
 
         try:
             return_value, cv2_im = self.camera.read()
-            del (self.camera)
+            del self.camera
             cv2_im = cv2.cvtColor(cv2_im, cv2.COLOR_BGR2RGB)
             pil_im = Image.fromarray(cv2_im)
+            if self.isRecording:
+                pil_im.save(self.imagepath + datetime.datetime.now().strftime('%H_%M_%S') + '_image.png')
             size = 128, 128
             self.camimage = ImageOps.fit(pil_im, size, Image.ANTIALIAS)
 
@@ -138,6 +151,20 @@ class WebcamScreen(Screen):
 
         draw = ImageDraw.Draw(drawimage, 'RGBA')
 
+        self.drawRecordingStatus(draw)
+
+        timertext = '' + str(self.updateCamTime) + 's'
+        draw.rectangle([(2, 110), (30, 127)], fill=(50, 50, 50, 128))
+        if self.menuselection == 0:
+            draw.line([(2, 110), (30, 110)], fill=getTheme()["highlight_text_color"])
+        draw.text((30-(len(timertext)*7), 114), timertext, fill=getTheme()["text_color"], font=getTheme()["font"])
+
+        self.LCD.LCD_ShowImage(drawimage, 0, 0)
+        del drawimage
+
+
+    def drawRecordingStatus(self, draw):
+
         r = 5
         x = 118
         y = 118
@@ -153,18 +180,14 @@ class WebcamScreen(Screen):
                 draw.ellipse((x - r, y - r + 2, x + r, y + r + 2), outline=(255, 0, 0, 255))
             else:
                 draw.ellipse((x - r, y - r + 2, x + r, y + r + 2), fill=(255, 0, 0, 255))
-            self.recordingIconVisible = not self.recordingIconVisible
         else:
-            draw.ellipse((x - r, y - r + 2, x + r, y + r + 2), outline=(255, 0, 0, 255))
+            draw.ellipse((x - r, y - r + 2, x + r, y + r + 2), outline=(128, 128, 128, 255))
 
-        timertext = '' + str(self.updateCamTime) + 's'
-        draw.rectangle([(2, 110), (30, 127)], fill=(50, 50, 50, 128))
-        if self.menuselection == 0:
-            draw.line([(2, 110), (30, 110)], fill=getTheme()["highlight_text_color"])
-        draw.text((30-(len(timertext)*7), 114), timertext, fill=getTheme()["text_color"], font=getTheme()["font"])
-
-        self.LCD.LCD_ShowImage(drawimage, 0, 0)
-        del drawimage
+        # smooth recording-button blinking, even if update() is called multiple times in one second
+        now = time.monotonic()
+        if (now - self.lastRecordingStatus) >= 1:
+            self.recordingIconVisible = not self.recordingIconVisible
+            self.lastRecordingStatus = now
 
     def key(self, event):
         print("WebcamScreen.key(): %s" % event)
@@ -174,15 +197,16 @@ class WebcamScreen(Screen):
         if event == "UP_RELEASED":
             if self.menuselection == 0:
                 self.updateCamTime = self.updateCamTime + 5
+            self.restartCamTimer()
         if event == "DOWN_RELEASED":
             if self.menuselection == 0:
                 self.updateCamTime = self.updateCamTime - 5
+            self.restartCamTimer()
         if event == "LEFT_RELEASED":
             self.menuselection = (self.menuselection - 1) % 2
         if event == "RIGHT_RELEASED":
             self.menuselection = (self.menuselection + 1) % 2
 
-        print 'self.menuselection: ' + str(self.menuselection)
         if self.updateCamTime < 5:
             self.updateCamTime = 5
 
