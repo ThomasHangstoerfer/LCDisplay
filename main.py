@@ -175,12 +175,16 @@ def main():
     #LCD.LCD_ShowImage(image,0,0)
 
     screens[currentscreen].update()
-    
+
+    try:
     #while (True):
-    while 1:
-        #time.sleep(.01)
-        time.sleep(1)
-    
+        while 1:
+            #time.sleep(.01)
+            time.sleep(1)
+    except KeyboardInterrupt:
+        print("KeyboardInterrupt")
+        screens[currentscreen].setVisible(False)
+
 if __name__ == '__main__':
     main()
 
