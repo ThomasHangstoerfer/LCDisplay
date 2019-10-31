@@ -15,7 +15,7 @@ from cam_screen import CamScreen
 from webcam_screen import WebcamScreen
 from system_screen import SystemScreen
 
-KEY_UP_PIN     = 6 
+KEY_UP_PIN     = 6
 KEY_DOWN_PIN   = 19
 KEY_LEFT_PIN   = 5
 KEY_RIGHT_PIN  = 26
@@ -25,7 +25,7 @@ KEY2_PIN       = 20
 KEY3_PIN       = 16
 
 #init GPIO
-GPIO.setmode(GPIO.BCM) 
+GPIO.setmode(GPIO.BCM)
 GPIO.cleanup()
 GPIO.setup(KEY_UP_PIN,      GPIO.IN, pull_up_down=GPIO.PUD_UP)    # Input with pull-up
 GPIO.setup(KEY_DOWN_PIN,    GPIO.IN, pull_up_down=GPIO.PUD_UP)  # Input with pull-up
@@ -65,17 +65,17 @@ screens["cam"] = CamScreen(LCD, screenManager)
 screens["webcam"] = WebcamScreen(LCD, screenManager)
 screens["system"] = SystemScreen(LCD, screenManager)
 
-#screenManager.switchToScreen("menu")
+screenManager.switchToScreen("menu")
 #screenManager.switchToScreen("webcam")
-screenManager.switchToScreen("system")
+#screenManager.switchToScreen("system")
 screens[currentscreen].setVisible(True)
 
-def handle_key_event(input_pin): 
+def handle_key_event(input_pin):
     global currentscreen
     global screens
     global screenManager
     print("handle_key_event %s currentscreen %s " %( input_pin, currentscreen))
-    
+
     if input_pin == KEY_UP_PIN:
         if GPIO.input(KEY_UP_PIN) == 0:
             screens[currentscreen].key('UP_PRESSED')
@@ -139,11 +139,11 @@ def handle_key_event(input_pin):
             print("Key3 released")
             screens[currentscreen].key('KEY3_RELEASED')
 
-    screens[currentscreen].update()
+    # screens[currentscreen].update()
 
 #try:
 def main():
-    
+
     # Caution: this runs in an other thread
     GPIO.add_event_detect(KEY_UP_PIN, GPIO.BOTH, callback=handle_key_event)
     GPIO.add_event_detect(KEY_DOWN_PIN, GPIO.BOTH, callback=handle_key_event)
@@ -153,8 +153,7 @@ def main():
     GPIO.add_event_detect(KEY1_PIN, GPIO.BOTH, callback=handle_key_event)
     GPIO.add_event_detect(KEY2_PIN, GPIO.BOTH, callback=handle_key_event)
     GPIO.add_event_detect(KEY3_PIN, GPIO.BOTH, callback=handle_key_event)
-    
- 
+
     #image = Image.new("RGB", (LCD.width, LCD.height), "WHITE")
     image = Image.new("RGB", (LCD.width, LCD.height), "BLACK")
     draw = ImageDraw.Draw(image)
