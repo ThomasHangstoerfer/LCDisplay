@@ -1,3 +1,9 @@
+# -*- coding: utf-8 -*-
+#
+# Author: Thomas Hangstoerfer
+# License: MIT
+#
+
 import time
 import cv2
 camera_port = 0

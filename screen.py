@@ -1,3 +1,9 @@
+# -*- coding: utf-8 -*-
+#
+# Author: Thomas Hangstoerfer
+# License: MIT
+#
+
 
 class Screen(object):
     """docstring for Screen"""

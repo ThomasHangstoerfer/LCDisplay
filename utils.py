@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
-
+#
+# Author: Thomas Hangstoerfer
+# License: MIT
+#
 
 from socket import socket, AF_INET, SOCK_DGRAM
 from threading import Timer

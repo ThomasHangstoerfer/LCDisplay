@@ -1,3 +1,9 @@
+# -*- coding: utf-8 -*-
+#
+# Author: Thomas Hangstoerfer
+# License: MIT
+#
+
 
 import math
 from PIL import Image,ImageDraw,ImageFont,ImageColor

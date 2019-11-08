@@ -1,5 +1,9 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
+#
+# Author: Thomas Hangstoerfer
+# License: MIT
+#
 
 import LCD_1in44
 import LCD_Config

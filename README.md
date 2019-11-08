@@ -6,4 +6,4 @@
     </tr>
 </table>
 
-
+pip3 install netifaces
