@@ -11,7 +11,7 @@
 <br>
 <br>
 pip3 install paho-mqtt
-
+pip3 install websockets
 pip3 install netifaces
 pip3 install lxml requests
 pip3 install fritzconnection

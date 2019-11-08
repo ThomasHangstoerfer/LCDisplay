@@ -7,6 +7,8 @@
 import LCD_1in44
 import LCD_Config
 import datetime
+import netifaces
+import math
 
 from PIL import Image,ImageDraw,ImageFont,ImageColor
 from themes import getTheme as getTheme
@@ -33,6 +35,8 @@ class NetworkScreen(Screen):
         self.quality = 0
         self.essid = ""
         self.big_font = ImageFont.truetype('/usr/share/fonts/truetype/freefont/FreeMonoBold.ttf', 15)
+        self.subscreen = 1
+        self.selected_interface = 0
 
 
     def setVisible(self, visible):
@@ -61,6 +65,8 @@ class NetworkScreen(Screen):
         draw = ImageDraw.Draw(image)
         #draw.rectangle([(1,1),(127,10)],fill = "RED")
 
+        print('Network-interfaces: ', netifaces.interfaces() )
+
         try:
             self.bitrate, self.bitrate_unit, self.quality, self.essid = utils.get_network_info('wlan0')
 
@@ -81,27 +87,50 @@ class NetworkScreen(Screen):
 
         draw.text((5, 1), 'N E T W O R K', fill = getTheme()["headline_color"], font = getTheme()["headlinefont"])
         draw.line([(0,18),(127,18)], fill = getTheme()["headline_color"], width = 3)
-        draw.text((1, 24), self.essid, fill = getTheme()["highlight_text_color"], font = self.big_font)
-        draw.text((1, 42), 'Quality: ' + str(self.quality) + '% ' + str(self.bitrate) + "" + self.bitrate_unit, fill = ("BLACK" if (self.currentline==0) else "BLUE"))
-        draw.text((1, 54), 'IP: ' + utils.get_ip_address(), fill = ("BLACK" if (self.currentline==0) else "BLUE"))
-        draw.text((1, 66), 'CPU: ' + utils.get_cpu_temp(), fill = ("BLACK" if (self.currentline==0) else "BLUE"))
-        # draw.text((1, 78), 'Make: ' + utils.get_make_running(), fill = "WHITE")
+        if self.subscreen == 0:
+            draw.text((1, 24), self.essid, fill = getTheme()["highlight_text_color"], font = self.big_font)
+            draw.text((1, 42), 'Quality: ' + str(self.quality) + '% ' + str(self.bitrate) + "" + self.bitrate_unit, fill = ("BLACK" if (self.currentline==0) else "BLUE"))
+            draw.text((1, 54), 'IP: ' + utils.get_ip_address(), fill = ("BLACK" if (self.currentline==0) else "BLUE"))
+            draw.text((1, 66), 'CPU: ' + utils.get_cpu_temp(), fill = ("BLACK" if (self.currentline==0) else "BLUE"))
+            # draw.text((1, 78), 'Make: ' + utils.get_make_running(), fill = "WHITE")
+        elif self.subscreen == 1:
+            count = len(netifaces.interfaces())
+            width_per_i = math.floor(127 / count)
+            print('width_per_i: ' + str(width_per_i))
+            print('selected_interface: ' + str(self.selected_interface))
+            addresses = netifaces.ifaddresses(netifaces.interfaces()[self.selected_interface])
+            ip4addresses = addresses[netifaces.AF_INET]
+            for a in range(len(ip4addresses)):
+                print('ifaddresses: ', ip4addresses[a]['addr'] )
+                draw.text((1, 42+a*10), 'IPv4: ' + ip4addresses[a]['addr'], fill = "BLACK")
 
-        draw.text((80, 118), datetime.datetime.now().strftime('%H:%M:%S'), fill = getTheme()["headline_color"])
+            for i in range(count):
+                iname = netifaces.interfaces()[i]
+                print('iname: ', iname)
+                
+                draw.rectangle([(i*width_per_i, 110), (i*width_per_i+width_per_i-2, 127)], fill=(50, 50, 50, 128))
+                draw.text((i*width_per_i, 114), str(iname), fill=getTheme()["text_color"], font=getTheme()["font"])
+            draw.line([(self.selected_interface*width_per_i, 110), (self.selected_interface*width_per_i+width_per_i-2, 110)], fill=getTheme()["highlight_text_color"])
+
+                                                              
+
+
+        #draw.text((80, 118), datetime.datetime.now().strftime('%H:%M:%S'), fill = getTheme()["headline_color"])
 
         self.LCD.LCD_ShowImage(image,0,0)
 
     def key(self, event):
         global screenManager
         print("NetworkScreen.key(): %s" % event)
+        icount = len(netifaces.interfaces())
         if ( event == "UP_RELEASED" ):
             self.currentline = (self.currentline - 1 ) % 1
         if ( event == "DOWN_RELEASED" ):
             self.currentline = (self.currentline + 1 ) % 1
         if ( event == "LEFT_RELEASED" ):
-            self.currentline = (self.currentline - 1 ) % 1
+            self.selected_interface = (self.selected_interface - 1 ) % icount
         if ( event == "RIGHT_RELEASED" ):
-            self.currentline = (self.currentline + 1 ) % 1
+            self.selected_interface = (self.selected_interface + 1 ) % icount
         if ( event == "JOYSTICK_RELEASED" ):
             self.screenManager.switchToScreen("menu")
         self.update()
