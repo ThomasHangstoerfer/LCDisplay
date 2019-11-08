@@ -133,7 +133,7 @@ class SystemScreen(Screen):
         self.remaining_balls = 0
         self.level = 1
         self.level_count = 3
-
+        self.take_screenshot = False
         self.reset()
 
     def setupLevel(self, level):
@@ -412,7 +412,15 @@ class SystemScreen(Screen):
             self.level = (self.level+1) % self.level_count
             self.setupLevel(self.level)
 
+        if self.take_screenshot:
+            drawimage.save('screenshot.png')
+            draw.text((15, 60), 'Screenshot saved', fill=getTheme()["headline_color"])
         self.LCD.LCD_ShowImage(drawimage, 0, 0)
+
+        if self.take_screenshot:
+            time.sleep(2)
+            self.take_screenshot = False
+
         del drawimage
 
     def key(self, event):
@@ -423,6 +431,9 @@ class SystemScreen(Screen):
                 self.ball_speed_y = -3.0
         if event == "KEY2_RELEASED":
             self.reset()
+        if event == "KEY3_RELEASED":
+            print('self.take_screenshot = True')
+            self.take_screenshot = True
         if event == "UP_RELEASED":
             self.level = (self.level+1) % self.level_count
             self.setupLevel(self.level)

@@ -18,6 +18,7 @@ from network_screen import NetworkScreen
 from cam_screen import CamScreen
 from webcam_screen import WebcamScreen
 from system_screen import SystemScreen
+from smarthome_screen import SmarthomeScreen
 
 KEY_UP_PIN     = 6
 KEY_DOWN_PIN   = 19
@@ -63,6 +64,7 @@ screenManager = ScreenManager()
 screens = {}
 currentscreen = "menu"
 screens["menu"] = MenuScreen(LCD, screenManager)
+screens["smarthome"] = SmarthomeScreen(LCD, screenManager)
 screens["network"] = NetworkScreen(LCD, screenManager)
 screens["slideshow"] = SlideshowScreen(LCD, screenManager)
 screens["cam"] = CamScreen(LCD, screenManager)
