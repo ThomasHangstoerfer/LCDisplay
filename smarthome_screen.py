@@ -20,15 +20,18 @@ import websockets
 
 async def hello():
     # uri = "ws://apollo:8765"
-    uri = "ws://apollo:8083/fhem?XHR=1&inform=type=status;filter=room=Wohnzimmer;since=1567258298;fmt=JSON&fw_id=73&timestamp=1567258300581"
-    async with websockets.connect(uri) as websocket:
-        #name = input("What's your name? ")
+    try:
+        uri = "ws://apollo:8083/fhem?XHR=1&inform=type=status;filter=room=Wohnzimmer;since=1567258298;fmt=JSON&fw_id=73&timestamp=1567258300581"
+        async with websockets.connect(uri) as websocket:
+            #name = input("What's your name? ")
 
-        #await websocket.send(name)
-        #print(f"> {name}")
+            #await websocket.send(name)
+            #print(f"> {name}")
 
-        greeting = await websocket.recv()
-        print("< ${greeting}")
+            greeting = await websocket.recv()
+            print("< ${greeting}")
+    except:
+        pass
 
 asyncio.get_event_loop().run_until_complete(hello())
 class SmarthomeScreen(Screen):

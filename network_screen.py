@@ -99,14 +99,20 @@ class NetworkScreen(Screen):
             print('width_per_i: ' + str(width_per_i))
             print('selected_interface: ' + str(self.selected_interface))
             addresses = netifaces.ifaddresses(netifaces.interfaces()[self.selected_interface])
-            ip4addresses = addresses[netifaces.AF_INET]
-            for a in range(len(ip4addresses)):
-                print('ifaddresses: ', ip4addresses[a]['addr'] )
-                draw.text((1, 42+a*10), 'IPv4: ' + ip4addresses[a]['addr'], fill = "BLACK")
+            print('addresses', addresses)
+            if netifaces.AF_INET in addresses:
+                ip4addresses = addresses[netifaces.AF_INET]
+                for a in range(len(ip4addresses)):
+                    print('ifaddresses: ', ip4addresses[a]['addr'])
+                    draw.text((1, 42 + a * 10), 'IPv4: ' + ip4addresses[a]['addr'], fill="BLACK")
+            else:
+                print('no netifaces.AF_INET in addresses')
+                draw.text((1, 42 ), 'No IPv4 addresses ', fill="BLACK")
+                draw.text((1, 52 ), 'assigned ', fill="BLACK")
 
             for i in range(count):
                 iname = netifaces.interfaces()[i]
-                print('iname: ', iname)
+                # print('iname: ', iname)
                 
                 draw.rectangle([(i*width_per_i, 110), (i*width_per_i+width_per_i-2, 127)], fill=(50, 50, 50, 128))
                 draw.text((i*width_per_i, 114), str(iname), fill=getTheme()["text_color"], font=getTheme()["font"])
