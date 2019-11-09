@@ -17,6 +17,7 @@ from slideshow_screen import SlideshowScreen
 from network_screen import NetworkScreen
 from cam_screen import CamScreen
 from webcam_screen import WebcamScreen
+from breakout_screen import BreakoutScreen
 from system_screen import SystemScreen
 from smarthome_screen import SmarthomeScreen
 
@@ -69,11 +70,12 @@ screens["network"] = NetworkScreen(LCD, screenManager)
 screens["slideshow"] = SlideshowScreen(LCD, screenManager)
 screens["cam"] = CamScreen(LCD, screenManager)
 screens["webcam"] = WebcamScreen(LCD, screenManager)
+screens["breakout"] = BreakoutScreen(LCD, screenManager)
 screens["system"] = SystemScreen(LCD, screenManager)
 
-screenManager.switchToScreen("menu")
-#screenManager.switchToScreen("webcam")
-#screenManager.switchToScreen("system")
+#screenManager.switchToScreen("menu")
+#screenManager.switchToScreen("network")
+screenManager.switchToScreen("system")
 screens[currentscreen].setVisible(True)
 
 def handle_key_event(input_pin):

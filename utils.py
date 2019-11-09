@@ -50,9 +50,30 @@ def get_cpu_temp():
     try:
         output = subprocess.run(['vcgencmd', 'measure_temp'], stdout=subprocess.PIPE).stdout.decode('utf-8')
         temp = output.split("=")[1]
+        temp = temp.split(".")[0]
+        temp = temp + "°C"
     except:
         pass
     return temp
+
+def get_uptime():
+    uptime = ""
+    try:
+        output = subprocess.run(['uptime'], stdout=subprocess.PIPE).stdout.decode('utf-8')
+        list = output.split(" ")
+        uptime = list[3] + list[4][:-1]
+    except:
+        pass
+    return uptime
+
+def get_hostname():
+    hostname = ""
+    try:
+        output = subprocess.run(['hostname'], stdout=subprocess.PIPE).stdout.decode('utf-8')
+        hostname = output
+    except:
+        pass
+    return hostname
 
 
 def get_make_running():
@@ -106,6 +127,20 @@ def get_network_info(wlan_device):
 
 def running_on_pi():
     return os.path.isfile(bl_power_file)
+
+def shutdown():
+    try:
+        output = subprocess.run(['shutdown', 'now'], stdout=subprocess.PIPE).stdout.decode('utf-8')
+    except:
+        pass
+
+def reboot():
+    try:
+        output = subprocess.run(['reboot', 'now'], stdout=subprocess.PIPE).stdout.decode('utf-8')
+    except:
+        pass
+
+
 
 
 class RepeatedTimer(object):

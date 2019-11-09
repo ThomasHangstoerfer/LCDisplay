@@ -32,7 +32,7 @@ class MenuScreen(Screen):
             {"name": "WebCam", "screenname": "webcam"},
             {"name": "Network", "screenname": "network"},
             {"name": "Slideshow", "screenname": "slideshow"},
-            {"name": "Dilli", "screenname": ""},
+            {"name": "Breakout", "screenname": "breakout"},
             {"name": "System", "screenname": "system"}
         ]
 

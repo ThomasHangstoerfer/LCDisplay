@@ -12,7 +12,7 @@ active_theme = "blue"
 
 def drawBackground(theme_name):
     #print("drawBackground " + theme_name)
-    image = Image.new("RGB", (128, 128), "WHITE")
+    image = Image.new("RGBA", (128, 128), "WHITE")
     if theme_name == "blue":
         innerColor = [80, 80, 255]  # Color at the center
         outerColor = [0, 0, 80]  # Color at the edge

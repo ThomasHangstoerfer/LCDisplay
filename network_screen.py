@@ -92,8 +92,10 @@ class NetworkScreen(Screen):
             draw.text((1, 42), 'Quality: ' + str(self.quality) + '% ' + str(self.bitrate) + "" + self.bitrate_unit, fill = ("BLACK" if (self.currentline==0) else "BLUE"))
             draw.text((1, 54), 'IP: ' + utils.get_ip_address(), fill = ("BLACK" if (self.currentline==0) else "BLUE"))
             draw.text((1, 66), 'CPU: ' + utils.get_cpu_temp(), fill = ("BLACK" if (self.currentline==0) else "BLUE"))
+            draw.text((1, 78), 'Hostname: ' + utils.get_hostname(), fill = ("BLACK" if (self.currentline==0) else "BLUE"))
             # draw.text((1, 78), 'Make: ' + utils.get_make_running(), fill = "WHITE")
         elif self.subscreen == 1:
+            draw.text((1, 30 ), 'Hostname:  ' + utils.get_hostname(), fill="BLACK")
             count = len(netifaces.interfaces())
             width_per_i = math.floor(127 / count)
             print('width_per_i: ' + str(width_per_i))
