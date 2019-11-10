@@ -57,7 +57,8 @@ screenManager.addScreen("breakout", BreakoutScreen(LCD, screenManager))
 screenManager.addScreen("system", SystemScreen(LCD, screenManager))
 screenManager.addScreen("network_menu", NetworkMenuScreen(LCD, screenManager))
 
-screenManager.switchToScreen("menu")
+#screenManager.switchToScreen("menu")
+screenManager.switchToScreen("system")
 
 
 def handle_key_event(input_pin):

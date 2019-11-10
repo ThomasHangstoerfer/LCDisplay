@@ -19,6 +19,7 @@ from screen import Screen
 from threading import Timer
 from themes import getTheme as getTheme
 from themes import changeTheme as changeTheme
+from popup import Popup
 import utils
 
 
@@ -132,6 +133,8 @@ class SystemScreen(Screen):
             changeTheme("red")
         if event == "JOYSTICK_RELEASED":
             if self.entries[self.currentline]["screenname"] == "reboot":
+                # TODO implement popup
+                # self.screenManager.popup = Popup()
                 utils.reboot()
             if self.entries[self.currentline]["screenname"] == "shutdown":
                 utils.shutdown()

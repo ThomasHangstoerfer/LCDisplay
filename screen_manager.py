@@ -7,15 +7,22 @@
 import LCD_1in44
 import LCD_Config
 import RPi.GPIO as GPIO
-from keys import KEY_UP_PIN, KEY_DOWN_PIN, KEY_LEFT_PIN, KEY_RIGHT_PIN, KEY_PRESS_PIN, KEY1_PIN, KEY2_PIN, KEY3_PIN
+from PIL import Image, ImageDraw, ImageFont, ImageColor, ImageOps
+
+from themes import getTheme as getTheme
+from themes import changeTheme as changeTheme
+from keys import get_key_event, KEY_UP_PIN, KEY_DOWN_PIN, KEY_LEFT_PIN, KEY_RIGHT_PIN, KEY_PRESS_PIN, KEY1_PIN, KEY2_PIN, KEY3_PIN
+
 
 class ScreenManager(object):
+
     def __init__(self, LCD, GPIO):
         self.LCD = LCD
         self.GPIO = GPIO
         self.take_screenshot = False
         self.screens = {}
         self.currentscreen = "menu"
+        self.popup = None
         pass
 
     def addScreen(self, name, screen):
@@ -36,6 +43,10 @@ class ScreenManager(object):
             draw = ImageDraw.Draw(image)
             draw.text((15, 60), 'Screenshot saved', fill=getTheme()["headline_color"])
 
+        if self.popup is not None:
+            draw = ImageDraw.Draw(image)
+            self.popup.draw(draw)
+
         self.LCD.LCD_ShowImage(image, 0, 0)
 
         if self.take_screenshot:
@@ -43,8 +54,10 @@ class ScreenManager(object):
             self.take_screenshot = False
 
     def handle_key_event(self, input_pin):
-        print("handle_key_event: %s currentscreen: %s " %( input_pin, self.currentscreen))
+        print("handle_key_event: %s currentscreen: %s " % (input_pin, self.currentscreen))
 
+        key_event = get_key_event(input_pin)
+        """
         if input_pin == KEY_UP_PIN:
             if GPIO.input(KEY_UP_PIN) == 0:
                 self.screens[self.currentscreen].key('UP_PRESSED')
@@ -104,5 +117,11 @@ class ScreenManager(object):
             else:
                 print("Key3 released")
                 self.screens[self.currentscreen].key('KEY3_RELEASED')
+        """
+        if self.popup is not None:
+            # TODO pass keyevent to popup
+            pass
+        else:
+            self.screens[self.currentscreen].key(key_event)
 
         # self.screens[self.currentscreen].update()

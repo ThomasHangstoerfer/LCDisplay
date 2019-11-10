@@ -23,6 +23,7 @@ class MainMenuScreen(MenuScreen):
         self.LCD = LCD
         self.screenManager = screenManager
         self.currentline = 0
+        self.show_clock = True
         self.menu_headline_text = 'M A I N'
         self.entries = [
             {"name": "SmartHome", "screenname": "smarthome"},
