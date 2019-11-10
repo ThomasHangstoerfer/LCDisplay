@@ -24,27 +24,20 @@ from system_screen import SystemScreen
 from smarthome_screen import SmarthomeScreen
 from network_menu_screen import NetworkMenuScreen
 from network_status_screen import NetworkStatusScreen
-
-KEY_UP_PIN     = 6
-KEY_DOWN_PIN   = 19
-KEY_LEFT_PIN   = 5
-KEY_RIGHT_PIN  = 26
-KEY_PRESS_PIN  = 13
-KEY1_PIN       = 21
-KEY2_PIN       = 20
-KEY3_PIN       = 16
+from screen_manager import ScreenManager
+from keys import KEY_UP_PIN, KEY_DOWN_PIN, KEY_LEFT_PIN, KEY_RIGHT_PIN, KEY_PRESS_PIN, KEY1_PIN, KEY2_PIN, KEY3_PIN
 
 #init GPIO
 GPIO.setmode(GPIO.BCM)
 GPIO.cleanup()
-GPIO.setup(KEY_UP_PIN,      GPIO.IN, pull_up_down=GPIO.PUD_UP)    # Input with pull-up
+GPIO.setup(KEY_UP_PIN,      GPIO.IN, pull_up_down=GPIO.PUD_UP)  # Input with pull-up
 GPIO.setup(KEY_DOWN_PIN,    GPIO.IN, pull_up_down=GPIO.PUD_UP)  # Input with pull-up
 GPIO.setup(KEY_LEFT_PIN,    GPIO.IN, pull_up_down=GPIO.PUD_UP)  # Input with pull-up
-GPIO.setup(KEY_RIGHT_PIN,   GPIO.IN, pull_up_down=GPIO.PUD_UP) # Input with pull-up
-GPIO.setup(KEY_PRESS_PIN,   GPIO.IN, pull_up_down=GPIO.PUD_UP) # Input with pull-up
-GPIO.setup(KEY1_PIN,        GPIO.IN, pull_up_down=GPIO.PUD_UP)      # Input with pull-up
-GPIO.setup(KEY2_PIN,        GPIO.IN, pull_up_down=GPIO.PUD_UP)      # Input with pull-up
-GPIO.setup(KEY3_PIN,        GPIO.IN, pull_up_down=GPIO.PUD_UP)      # Input with pull-up
+GPIO.setup(KEY_RIGHT_PIN,   GPIO.IN, pull_up_down=GPIO.PUD_UP)  # Input with pull-up
+GPIO.setup(KEY_PRESS_PIN,   GPIO.IN, pull_up_down=GPIO.PUD_UP)  # Input with pull-up
+GPIO.setup(KEY1_PIN,        GPIO.IN, pull_up_down=GPIO.PUD_UP)  # Input with pull-up
+GPIO.setup(KEY2_PIN,        GPIO.IN, pull_up_down=GPIO.PUD_UP)  # Input with pull-up
+GPIO.setup(KEY3_PIN,        GPIO.IN, pull_up_down=GPIO.PUD_UP)  # Input with pull-up
 
 LCD = LCD_1in44.LCD()
 print("**********Init LCD**********")
@@ -52,128 +45,26 @@ Lcd_ScanDir = LCD_1in44.SCAN_DIR_DFT  #SCAN_DIR_DFT = D2U_L2R
 LCD.LCD_Init(Lcd_ScanDir)
 LCD.LCD_Clear()
 
-class ScreenManager(object):
-    def __init__(self, LCD):
-        self.LCD = LCD
-        self.take_screenshot = False
-        pass
+screenManager = ScreenManager(LCD, GPIO)
 
-    def switchToScreen(self, screen):
-        print('ScreenManager.switchToScreen(%s)' % screen)
-        global currentscreen
-        global screens
-        if screen in screens and screens[screen] is not None:
-            screens[currentscreen].setVisible(False)
-            currentscreen = screen
-            screens[currentscreen].setVisible(True)
-        else:
-            print('ScreenManager.switchToScreen() invalid screen %s' % screen)
-
-    def draw(self, image):
-        if self.take_screenshot:
-            image.save('screenshot.png')
-            draw = ImageDraw.Draw(image)
-            draw.text((15, 60), 'Screenshot saved', fill=getTheme()["headline_color"])
-
-        self.LCD.LCD_ShowImage(image,0,0)
-
-        if self.take_screenshot:
-            time.sleep(2)
-            self.take_screenshot = False
-
-
-screenManager = ScreenManager(LCD)
-
-screens = {}
-currentscreen = "menu"
-screens["menu"] = MainMenuScreen(LCD, screenManager)
-screens["smarthome"] = SmarthomeScreen(LCD, screenManager)
-screens["network_status"] = NetworkStatusScreen(LCD, screenManager)
-screens["slideshow"] = SlideshowScreen(LCD, screenManager)
-screens["cam"] = CamScreen(LCD, screenManager)
-screens["webcam"] = WebcamScreen(LCD, screenManager)
-screens["breakout"] = BreakoutScreen(LCD, screenManager)
-screens["system"] = SystemScreen(LCD, screenManager)
-screens["network_menu"] = NetworkMenuScreen(LCD, screenManager)
+screenManager.addScreen("menu", MainMenuScreen(LCD, screenManager))
+screenManager.addScreen("smarthome", SmarthomeScreen(LCD, screenManager))
+screenManager.addScreen("network_status", NetworkStatusScreen(LCD, screenManager))
+screenManager.addScreen("slideshow", SlideshowScreen(LCD, screenManager))
+screenManager.addScreen("cam", CamScreen(LCD, screenManager))
+screenManager.addScreen("webcam", WebcamScreen(LCD, screenManager))
+screenManager.addScreen("breakout", BreakoutScreen(LCD, screenManager))
+screenManager.addScreen("system", SystemScreen(LCD, screenManager))
+screenManager.addScreen("network_menu", NetworkMenuScreen(LCD, screenManager))
 
 screenManager.switchToScreen("menu")
-screenManager.switchToScreen("network_menu")
-#screenManager.switchToScreen("network")
-#screenManager.switchToScreen("system")
-screens[currentscreen].setVisible(True)
+
 
 def handle_key_event(input_pin):
-    global currentscreen
-    global screens
     global screenManager
-    print("handle_key_event: %s currentscreen: %s " %( input_pin, currentscreen))
+    screenManager.handle_key_event(input_pin)
 
-    if input_pin == KEY_UP_PIN:
-        if GPIO.input(KEY_UP_PIN) == 0:
-            screens[currentscreen].key('UP_PRESSED')
-            print("Up pressed")
-        else:
-            screens[currentscreen].key('UP_RELEASED')
-            print("Up released")
-    if input_pin == KEY_DOWN_PIN:
-        if GPIO.input(KEY_DOWN_PIN) == 0:
-            screens[currentscreen].key('DOWN_PRESSED')
-            print("Down pressed")
-        else:
-            screens[currentscreen].key('DOWN_RELEASED')
-            print("Down released")
-    if input_pin == KEY_LEFT_PIN:
-        if GPIO.input(KEY_LEFT_PIN) == 0:
-            screens[currentscreen].key('LEFT_PRESSED')
-            print("Left pressed")
-        else:
-            screens[currentscreen].key('LEFT_RELEASED')
-            print("Left released")
-    if input_pin == KEY_RIGHT_PIN:
-        if GPIO.input(KEY_RIGHT_PIN) == 0:
-            screens[currentscreen].key('RIGHT_PRESSED')
-            print("Right pressed")
-        else:
-            screens[currentscreen].key('RIGHT_RELEASED')
-            print("Right released")
-    if input_pin == KEY_PRESS_PIN:
-        if GPIO.input(KEY_PRESS_PIN) == 0:
-            screens[currentscreen].key('JOYSTICK_PRESSED')
-            print("Joystick pressed")
-        else:
-            screens[currentscreen].key('JOYSTICK_RELEASED')
-            print("Joystick released")
-    if input_pin == KEY1_PIN:
-        if GPIO.input(KEY1_PIN) == 0:
-            print("Key1 pressed")
-            screens[currentscreen].key('KEY1_PRESSED')
-        else:
-            print("Key1 released")
-            screens[currentscreen].key('KEY1_RELEASED')
-            screenManager.switchToScreen("menu")
 
-    if input_pin == KEY2_PIN:
-        if GPIO.input(KEY2_PIN) == 0:
-            print("Key2 pressed")
-            screens[currentscreen].key('KEY2_PRESSED')
-            #screenManager.switchToScreen("slideshow")
-            #image = Image.open('time.bmp')
-            #LCD.LCD_ShowImage(image,0,0)
-        else:
-            print("Key2 released")
-            screens[currentscreen].key('KEY2_RELEASED')
-
-    if input_pin == KEY3_PIN:
-        if GPIO.input(KEY3_PIN) == 0:
-            print("Key3 pressed")
-            screens[currentscreen].key('KEY3_PRESSED')
-        else:
-            print("Key3 released")
-            screens[currentscreen].key('KEY3_RELEASED')
-
-    # screens[currentscreen].update()
-
-#try:
 def main():
 
     # Caution: this runs in an other thread
@@ -189,8 +80,7 @@ def main():
     image = Image.new("RGB", (LCD.width, LCD.height), "BLACK")
     draw = ImageDraw.Draw(image)
     # LCD_Config.Driver_Delay_ms(5000)
-
-    screens[currentscreen].update()
+    # screens[currentscreen].update()
 
     try:
         while 1:
@@ -203,6 +93,7 @@ def main():
         draw = ImageDraw.Draw(image)
         LCD.LCD_ShowImage(image,0,0)
         GPIO.cleanup()
+
 
 if __name__ == '__main__':
     main()
