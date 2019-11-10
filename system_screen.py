@@ -31,7 +31,6 @@ class SystemScreen(Screen):
         self.screenManager = screenManager
         self.currentline = 0
         self.dynamic_y_axis = False
-        self.take_screenshot = False
         self.entries = [
             {"name": "Reboot", "screenname": "reboot"},
             {"name": "Shutdown", "screenname": "shutdown"}
@@ -116,15 +115,7 @@ class SystemScreen(Screen):
         # draw.text((40, 110), datetime.datetime.now().strftime('%H:%M:%S'), fill=getTheme()["highlight_text_color"],
         #           font=getTheme()["clockfont"])
 
-        if self.take_screenshot:
-            image.save('screenshot.png')
-            draw.text((15, 60), 'Screenshot saved', fill=getTheme()["headline_color"])
-
-        self.LCD.LCD_ShowImage(image, 0, 0)
-
-        if self.take_screenshot:
-            time.sleep(2)
-            self.take_screenshot = False
+        self.screenManager.draw(image)
 
     def key(self, event):
         global screenManager
@@ -147,5 +138,5 @@ class SystemScreen(Screen):
                 utils.shutdown()
         if event == "KEY3_RELEASED":
             print('self.take_screenshot = True')
-            self.take_screenshot = True
+            self.screenManager.take_screenshot = True
         self.update()

@@ -28,8 +28,6 @@ class NetworkScreen(Screen):
     def __init__(self, LCD, screenManager):
         super(NetworkScreen, self).__init__()
         #print("NetworkScreen.NetworkScreen() ")
-        self.LCD = LCD
-        self.take_screenshot = False
         self.screenManager = screenManager
         self.currentline = 0
         self.bitrate = 0
@@ -62,7 +60,7 @@ class NetworkScreen(Screen):
         #print("NetworkScreen.update() %s" % self.isVisible())
         if (not self.isVisible()):
             return
-        #image = Image.new("RGB", (self.LCD.width, self.LCD.height), "WHITE")
+
         image = getTheme()["background_image"].copy()
         draw = ImageDraw.Draw(image)
         #draw.rectangle([(1,1),(127,10)],fill = "RED")
@@ -124,15 +122,7 @@ class NetworkScreen(Screen):
 
         #draw.text((80, 118), datetime.datetime.now().strftime('%H:%M:%S'), fill = getTheme()["headline_color"])
 
-        if self.take_screenshot:
-            image.save('screenshot.png')
-            draw.text((15, 60), 'Screenshot saved', fill=getTheme()["headline_color"])
-
-        self.LCD.LCD_ShowImage(image,0,0)
-
-        if self.take_screenshot:
-            time.sleep(2)
-            self.take_screenshot = False
+        self.screenManager.draw(image)
 
     def key(self, event):
         global screenManager
@@ -149,7 +139,7 @@ class NetworkScreen(Screen):
         if ( event == "JOYSTICK_RELEASED" ):
             self.screenManager.switchToScreen("menu")
         if event == "KEY3_RELEASED":
-            print('self.take_screenshot = True')
-            self.take_screenshot = True
+            print('self.screenManager.take_screenshot = True')
+            self.screenManager.take_screenshot = True
         self.update()
 

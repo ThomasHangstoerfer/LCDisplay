@@ -133,7 +133,6 @@ class BreakoutScreen(Screen):
         self.remaining_balls = 0
         self.level = 1
         self.level_count = 3
-        self.take_screenshot = False
         self.reset()
 
     def setupLevel(self, level):
@@ -251,13 +250,13 @@ class BreakoutScreen(Screen):
         image = getTheme()["background_image"].copy()
         draw = ImageDraw.Draw(image)
         draw.text((7, 94), "Initializing camera", fill=getTheme()["headline_color"])
-        self.LCD.LCD_ShowImage(image, 0, 0)
+        self.screenManager.draw(image)
 
     def showErrorScreen(self):
         image = getTheme()["background_image"].copy()
         draw = ImageDraw.Draw(image)
         draw.text((10, 94), "No camera detected", fill=getTheme()["headline_color"])
-        self.LCD.LCD_ShowImage(image, 0, 0)
+        self.screenManager.draw(image)
 
 
     def checkBallCollision(self):
@@ -386,8 +385,8 @@ class BreakoutScreen(Screen):
         if not self.isVisible():
             return
 
-        drawimage = getTheme()["background_image"].copy()
-        draw = ImageDraw.Draw(drawimage, 'RGBA')
+        image = getTheme()["background_image"].copy()
+        draw = ImageDraw.Draw(image, 'RGBA')
 
         self.ball_x = self.ball_x + self.ball_speed_x
         self.ball_y = self.ball_y + self.ball_speed_y
@@ -412,16 +411,9 @@ class BreakoutScreen(Screen):
             self.level = (self.level+1) % self.level_count
             self.setupLevel(self.level)
 
-        if self.take_screenshot:
-            drawimage.save('screenshot.png')
-            draw.text((15, 60), 'Screenshot saved', fill=getTheme()["headline_color"])
-        self.LCD.LCD_ShowImage(drawimage, 0, 0)
+        self.screenManager.draw(image)
 
-        if self.take_screenshot:
-            time.sleep(2)
-            self.take_screenshot = False
-
-        del drawimage
+        del image
 
     def key(self, event):
         print("BreakoutScreen.key(): %s" % event)
@@ -433,7 +425,7 @@ class BreakoutScreen(Screen):
             self.reset()
         if event == "KEY3_RELEASED":
             print('self.take_screenshot = True')
-            self.take_screenshot = True
+            self.screenManager.take_screenshot = True
         if event == "UP_RELEASED":
             self.level = (self.level+1) % self.level_count
             self.setupLevel(self.level)

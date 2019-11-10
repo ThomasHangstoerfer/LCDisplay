@@ -69,7 +69,7 @@ class CamScreen(Screen):
             image = Image.new("RGB", (self.LCD.width, self.LCD.height), "BLACK")
             draw = ImageDraw.Draw(image)
             draw.text((35, 40), 'NO IMAGES', fill = "BLUE")
-            self.LCD.LCD_ShowImage(image, 0, 0)
+            self.screenManager.draw(image)
             return
 
         if self.currentimage == -1 or self.currentimage >= len(loadedImages):
@@ -86,7 +86,7 @@ class CamScreen(Screen):
         draw.rectangle([(0,116),(127,127)],fill = "BLACK")
         draw.text((0, 118), loadedImages[self.currentimage], fill = "BLUE")
 
-        self.LCD.LCD_ShowImage(image,0,0)
+        self.screenManager.draw(image)
 
     def key(self, event):
         print("CamScreen.key(): %s" % event)

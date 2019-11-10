@@ -97,7 +97,7 @@ class SmarthomeScreen(Screen):
 
         draw.text((80, 118), datetime.datetime.now().strftime('%H:%M:%S'), fill=getTheme()["headline_color"])
 
-        self.LCD.LCD_ShowImage(image, 0, 0)
+        self.screenManager.draw(image)
 
     def key(self, event):
         global screenManager

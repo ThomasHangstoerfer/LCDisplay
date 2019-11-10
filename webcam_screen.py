@@ -100,14 +100,14 @@ class WebcamScreen(Screen):
         image = getTheme()["background_image"].copy()
         draw = ImageDraw.Draw(image)
         draw.text((7, 94), "Initializing camera", fill=getTheme()["headline_color"])
-        self.LCD.LCD_ShowImage(image, 0, 0)
+        # self.screenManager.draw(image)
         self.camimage = image
 
     def showErrorScreen(self):
         image = getTheme()["background_image"].copy()
         draw = ImageDraw.Draw(image)
         draw.text((10, 94), "No camera detected", fill=getTheme()["headline_color"])
-        # self.LCD.LCD_ShowImage(image, 0, 0)
+        # self.screenManager.draw(image)
         self.camimage = image
 
     def updateCam(self):
@@ -165,7 +165,7 @@ class WebcamScreen(Screen):
             draw.line([(2, 110), (30, 110)], fill=getTheme()["highlight_text_color"])
         draw.text((30-(len(timertext)*7), 114), timertext, fill=getTheme()["text_color"], font=getTheme()["font"])
 
-        self.LCD.LCD_ShowImage(drawimage, 0, 0)
+        self.screenManager.draw(drawimage)
         del drawimage
 
 

@@ -13,6 +13,7 @@ import RPi.GPIO as GPIO
 import time
 import utils
 from screen import Screen
+from themes import getTheme as getTheme
 from menu_screen import MenuScreen
 from slideshow_screen import SlideshowScreen
 from network_screen import NetworkScreen
@@ -50,7 +51,9 @@ LCD.LCD_Init(Lcd_ScanDir)
 LCD.LCD_Clear()
 
 class ScreenManager(object):
-    def __init__(self):
+    def __init__(self, LCD):
+        self.LCD = LCD
+        self.take_screenshot = False
         pass
 
     def switchToScreen(self, screen):
@@ -61,7 +64,20 @@ class ScreenManager(object):
             currentscreen = screen
             screens[currentscreen].setVisible(True)
 
-screenManager = ScreenManager()
+    def draw(self, image):
+        if self.take_screenshot:
+            image.save('screenshot.png')
+            draw = ImageDraw.Draw(image)
+            draw.text((15, 60), 'Screenshot saved', fill=getTheme()["headline_color"])
+
+        self.LCD.LCD_ShowImage(image,0,0)
+
+        if self.take_screenshot:
+            time.sleep(2)
+            self.take_screenshot = False
+
+
+screenManager = ScreenManager(LCD)
 
 screens = {}
 currentscreen = "menu"

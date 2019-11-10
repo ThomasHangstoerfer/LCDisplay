@@ -1,5 +1,10 @@
 # LCDisplay
-<a href="https://www.amazon.de/gp/product/B077YK8161">Waveshare Raspberry Pi 128x128 Pixels 1.44inch LCD Display Hat </a>
+
+<ul>
+<li>Amazon: <a href="https://www.amazon.de/gp/product/B077YK8161">Waveshare Raspberry Pi 128x128 Pixels 1.44inch LCD Display Hat </a></li>
+<li><a href="https://www.waveshare.com/wiki/1.44inch_LCD_HAT">Waveshare Wiki</a></li>
+</ul>
+
 <table>
     <tr>
         <td><img src="doc/LCDisplay.jpeg" style="width: 200px;"></img></td>
@@ -17,8 +22,12 @@
 </table>
 <br>
 <br>
-pip3 install paho-mqtt
-pip3 install websockets
-pip3 install netifaces
-pip3 install lxml requests
-pip3 install fritzconnection
+
+```
+pip3 install paho-mqtt \
+             websockets \
+             netifaces \
+             lxml requests \
+             psutil \
+             fritzconnection
+```

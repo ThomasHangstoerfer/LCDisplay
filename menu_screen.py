@@ -25,7 +25,6 @@ class MenuScreen(Screen):
         super(MenuScreen, self).__init__()
         # print("MenuScreen.MenuScreen() ")
         self.LCD = LCD
-        self.take_screenshot = False
         self.screenManager = screenManager
         self.currentline = 0
         self.entries = [
@@ -87,15 +86,7 @@ class MenuScreen(Screen):
         draw.text((40, 110), datetime.datetime.now().strftime('%H:%M:%S'), fill=getTheme()["highlight_text_color"],
                   font=getTheme()["clockfont"])
 
-        if self.take_screenshot:
-            image.save('screenshot.png')
-            draw.text((15, 60), 'Screenshot saved', fill=getTheme()["headline_color"])
-
-        self.LCD.LCD_ShowImage(image, 0, 0)
-
-        if self.take_screenshot:
-            time.sleep(2)
-            self.take_screenshot = False
+        self.screenManager.draw(image)
 
     def key(self, event):
         global screenManager
@@ -116,5 +107,5 @@ class MenuScreen(Screen):
                 self.screenManager.switchToScreen(self.entries[self.currentline]["screenname"])
         if event == "KEY3_RELEASED":
             print('self.take_screenshot = True')
-            self.take_screenshot = True
+            self.screenManager.take_screenshot = True
         self.update()

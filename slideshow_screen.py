@@ -35,7 +35,7 @@ class SlideshowScreen(Screen):
             return
 
         image = Image.open(self.images[self.currentimage])
-        self.LCD.LCD_ShowImage(image,0,0)
+        self.screenManager.draw(image)
 
     def key(self, event):
         print("SlideshowScreen.key(): %s" % event)
