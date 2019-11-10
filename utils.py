@@ -174,7 +174,7 @@ class CPULoad:
         self.measure_cpu_load()
 
     def measure_cpu_load(self):
-        print('CPULoad.measure_cpu_load()')
+        # print('CPULoad.measure_cpu_load()')
         self.history.append(psutil.cpu_percent())
         while len(self.history) > self.max_measurement_count:
             self.history.pop(0)

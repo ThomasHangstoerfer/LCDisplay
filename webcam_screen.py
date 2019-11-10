@@ -162,7 +162,7 @@ class WebcamScreen(Screen):
         timertext = '' + str(self.updateCamTime) + 's'
         draw.rectangle([(2, 110), (30, 127)], fill=(50, 50, 50, 128))
         if self.menuselection == 0:
-            draw.line([(2, 110), (30, 110)], fill=getTheme()["highlight_text_color"])
+            draw.line([(2, 110), (30, 110)], fill=getTheme()["cursor_color"])
         draw.text((30-(len(timertext)*7), 114), timertext, fill=getTheme()["text_color"], font=getTheme()["font"])
 
         self.screenManager.draw(drawimage)
@@ -177,7 +177,7 @@ class WebcamScreen(Screen):
 
         draw.rectangle([(x-10, 110), (x+10, 127)], fill=(50, 50, 50, 128))
         if self.menuselection == 1:
-            draw.line([(x-10, 110), (x+10, 110)], fill=getTheme()["highlight_text_color"])
+            draw.line([(x-10, 110), (x+10, 110)], fill=getTheme()["cursor_color"])
         if self.isRecording:
             # draw.rectangle([(1,1),(127,10)],fill = "RED")
             # draw.polygon([(50, 0), (100, 100), (0, 100)], (255, 0, 0, 125))

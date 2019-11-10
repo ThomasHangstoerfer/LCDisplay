@@ -69,7 +69,7 @@ class SystemScreen(Screen):
             factor = graph_height / max(load)
         else:
             factor = 1.0
-        print('factor ', factor)
+        # print('factor ', factor)
         for i in reversed(range(len(load))):
             draw.rectangle([(cur_x, max(graph_top_y, graph_top_y+graph_height-(load[i]*factor))), (cur_x+bar_width, graph_top_y+graph_height)], fill=(150, 150, 250, 255))
             cur_x -= bar_width
@@ -87,7 +87,7 @@ class SystemScreen(Screen):
         # draw.rectangle([(1,1),(127,10)],fill = "RED")
 
         draw.text((15, 1), 'S Y S T E M', fill=getTheme()["headline_color"], font=getTheme()["headlinefont"])
-        draw.line([(0, 18), (127, 18)], fill=getTheme()["headline_color"], width=1)
+        draw.line([(0, 16), (127, 18)], fill="BLACK", width=1)
 
         draw.text((1, 24), "CPU:", fill=(getTheme()["text_color"]), font=getTheme()["font"])
         draw.text((30, 24), utils.get_cpu_temp(), fill=(getTheme()["highlight_text_color"]), font=getTheme()["font"])
@@ -106,8 +106,8 @@ class SystemScreen(Screen):
                     getTheme()["highlight_text_color"] if (self.currentline == i) else getTheme()["text_color"]),
                           font=getTheme()["font"])
                 if self.currentline == i:
-                    draw.line([(0, y_offset), (127, y_offset)], fill=getTheme()["highlight_text_color"], width=1)
-                    draw.line([(0, y_offset + 10), (127, y_offset + 10)], fill=getTheme()["highlight_text_color"],
+                    draw.line([(0, y_offset), (127, y_offset)], fill=getTheme()["cursor_color"], width=1)
+                    draw.line([(0, y_offset + 10), (127, y_offset + 10)], fill=getTheme()["cursor_color"],
                               width=1)
 
             y_offset += 12
@@ -118,7 +118,6 @@ class SystemScreen(Screen):
         self.screenManager.draw(image)
 
     def key(self, event):
-        global screenManager
         print("SystemScreen.key(): %s" % event)
         entry_count = len(self.entries)
         if event == "UP_RELEASED":

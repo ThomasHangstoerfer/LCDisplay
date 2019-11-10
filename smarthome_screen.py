@@ -89,7 +89,7 @@ class SmarthomeScreen(Screen):
         draw = ImageDraw.Draw(image)
 
         draw.text((5, 1), 'SMARTHOME', fill = getTheme()["headline_color"], font=getTheme()["headlinefont"])
-        draw.line([(0,18),(127,18)], fill = getTheme()["headline_color"], width=3)
+        draw.line([(0, 18), (127, 18)], fill="BLACK", width=1)
         draw.text((1, 42), 'Licht: ', fill=("BLACK" if (self.currentline == 0) else "BLUE"))
         draw.text((1, 54), 'Heizung: ', fill=("BLACK" if (self.currentline == 0) else "BLUE"))
         draw.text((1, 66), 'Fenster: ', fill=("BLACK" if (self.currentline == 0) else "BLUE"))
@@ -100,7 +100,6 @@ class SmarthomeScreen(Screen):
         self.screenManager.draw(image)
 
     def key(self, event):
-        global screenManager
         print("SmarthomeScreen.key(): %s" % event)
         if ( event == "UP_RELEASED" ):
             self.currentline = (self.currentline - 1 ) % 1

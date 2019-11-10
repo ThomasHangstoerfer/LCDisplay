@@ -41,9 +41,10 @@ def drawBackground(theme_name):
 
 themes = {}
 themes["blue"] = {
-    "text_color": "#ff0000",
+    "text_color": "#999999",
     "highlight_text_color": "WHITE",
     "headline_color": "WHITE",
+    "cursor_color": "RED",
     "headlinefont": ImageFont.truetype('/usr/share/fonts/truetype/freefont/FreeMonoBold.ttf', 15),
     "font": ImageFont.truetype('/usr/share/fonts/truetype/freefont/FreeMonoBold.ttf', 11),
     "clockfont": ImageFont.truetype('/usr/share/fonts/truetype/freefont/FreeMonoBold.ttf', 18),
@@ -54,6 +55,7 @@ themes["red"] = {
     "text_color": "BLACK",
     "highlight_text_color": "RED",
     "headline_color": "BLACK",
+    "cursor_color": "BLACK",
     "headlinefont": ImageFont.truetype('/usr/share/fonts/truetype/freefont/FreeMonoBold.ttf', 15),
     "font": ImageFont.truetype('/usr/share/fonts/truetype/freefont/FreeMonoBold.ttf', 11),
     "clockfont": ImageFont.truetype('/usr/share/fonts/truetype/freefont/FreeMonoBold.ttf', 18),

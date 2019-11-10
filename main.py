@@ -15,13 +15,15 @@ import utils
 from screen import Screen
 from themes import getTheme as getTheme
 from menu_screen import MenuScreen
+from main_menu_screen import MainMenuScreen
 from slideshow_screen import SlideshowScreen
-from network_screen import NetworkScreen
 from cam_screen import CamScreen
 from webcam_screen import WebcamScreen
 from breakout_screen import BreakoutScreen
 from system_screen import SystemScreen
 from smarthome_screen import SmarthomeScreen
+from network_menu_screen import NetworkMenuScreen
+from network_status_screen import NetworkStatusScreen
 
 KEY_UP_PIN     = 6
 KEY_DOWN_PIN   = 19
@@ -57,12 +59,15 @@ class ScreenManager(object):
         pass
 
     def switchToScreen(self, screen):
+        print('ScreenManager.switchToScreen(%s)' % screen)
         global currentscreen
         global screens
         if screen in screens and screens[screen] is not None:
             screens[currentscreen].setVisible(False)
             currentscreen = screen
             screens[currentscreen].setVisible(True)
+        else:
+            print('ScreenManager.switchToScreen() invalid screen %s' % screen)
 
     def draw(self, image):
         if self.take_screenshot:
@@ -81,25 +86,27 @@ screenManager = ScreenManager(LCD)
 
 screens = {}
 currentscreen = "menu"
-screens["menu"] = MenuScreen(LCD, screenManager)
+screens["menu"] = MainMenuScreen(LCD, screenManager)
 screens["smarthome"] = SmarthomeScreen(LCD, screenManager)
-screens["network"] = NetworkScreen(LCD, screenManager)
+screens["network_status"] = NetworkStatusScreen(LCD, screenManager)
 screens["slideshow"] = SlideshowScreen(LCD, screenManager)
 screens["cam"] = CamScreen(LCD, screenManager)
 screens["webcam"] = WebcamScreen(LCD, screenManager)
 screens["breakout"] = BreakoutScreen(LCD, screenManager)
 screens["system"] = SystemScreen(LCD, screenManager)
+screens["network_menu"] = NetworkMenuScreen(LCD, screenManager)
 
-#screenManager.switchToScreen("menu")
+screenManager.switchToScreen("menu")
+screenManager.switchToScreen("network_menu")
 #screenManager.switchToScreen("network")
-screenManager.switchToScreen("system")
+#screenManager.switchToScreen("system")
 screens[currentscreen].setVisible(True)
 
 def handle_key_event(input_pin):
     global currentscreen
     global screens
     global screenManager
-    print("handle_key_event %s currentscreen %s " %( input_pin, currentscreen))
+    print("handle_key_event: %s currentscreen: %s " %( input_pin, currentscreen))
 
     if input_pin == KEY_UP_PIN:
         if GPIO.input(KEY_UP_PIN) == 0:
@@ -152,10 +159,10 @@ def handle_key_event(input_pin):
             #screenManager.switchToScreen("slideshow")
             #image = Image.open('time.bmp')
             #LCD.LCD_ShowImage(image,0,0)
-
         else:
             print("Key2 released")
             screens[currentscreen].key('KEY2_RELEASED')
+
     if input_pin == KEY3_PIN:
         if GPIO.input(KEY3_PIN) == 0:
             print("Key3 pressed")
@@ -179,46 +186,23 @@ def main():
     GPIO.add_event_detect(KEY2_PIN, GPIO.BOTH, callback=handle_key_event)
     GPIO.add_event_detect(KEY3_PIN, GPIO.BOTH, callback=handle_key_event)
 
-    #image = Image.new("RGB", (LCD.width, LCD.height), "WHITE")
     image = Image.new("RGB", (LCD.width, LCD.height), "BLACK")
     draw = ImageDraw.Draw(image)
-
-    ##font = ImageFont.truetype('/usr/share/fonts/truetype/freefont/FreeMonoBold.ttf', 16)
-    #print "***draw line"
-    #draw.line([(0,0),(127,0)], fill = "BLUE",width = 5)
-    #draw.line([(127,0),(127,127)], fill = "BLUE",width = 5)
-    #draw.line([(127,127),(0,127)], fill = "BLUE",width = 5)
-    #draw.line([(0,127),(0,0)], fill = "BLUE",width = 5)
-    #print "***draw rectangle"
-    #draw.rectangle([(18,10),(110,20)],fill = "RED")
-    ##LCD_Config.Driver_Delay_ms(5000)
-
-    #print "***draw text"
-    #draw.text((33, 22), 'Jetzt ', fill = "BLUE")
-    #draw.text((32, 36), 'kommt ein', fill = "BLUE")
-    ##draw.text((28, 48), '1.44inch LCD ', fill = "BLUE")
-    #draw.text((28, 48), 'MURCH ', fill = "BLUE")
-    #LCD.LCD_ShowImage(image,0,0)
-    #LCD_Config.Driver_Delay_ms(3000)
-
-    #image = Image.open('time.bmp')
-    #LCD.LCD_ShowImage(image,0,0)
+    # LCD_Config.Driver_Delay_ms(5000)
 
     screens[currentscreen].update()
 
     try:
-    #while (True):
         while 1:
-            #time.sleep(.01)
             time.sleep(1)
     except KeyboardInterrupt:
         print("KeyboardInterrupt")
         utils.cpu_load.stop()
         screens[currentscreen].setVisible(False)
+        image = Image.new("RGB", (LCD.width, LCD.height), "BLACK")
+        draw = ImageDraw.Draw(image)
+        LCD.LCD_ShowImage(image,0,0)
+        GPIO.cleanup()
 
 if __name__ == '__main__':
     main()
-
-#except:
-#    print("except")
-#    GPIO.cleanup()

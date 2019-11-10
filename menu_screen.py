@@ -16,26 +16,15 @@ from screen import Screen
 from threading import Timer
 
 
-# duration is in seconds
-# wait for time completion
-# t.join()
-
 class MenuScreen(Screen):
     def __init__(self, LCD, screenManager):
         super(MenuScreen, self).__init__()
         # print("MenuScreen.MenuScreen() ")
         self.LCD = LCD
         self.screenManager = screenManager
+        self.menu_headline_text = 'M E N U'
+        self.show_clock = False
         self.currentline = 0
-        self.entries = [
-            {"name": "SmartHome", "screenname": "smarthome"},
-            {"name": "Cam", "screenname": "cam"},
-            {"name": "WebCam", "screenname": "webcam"},
-            {"name": "Network", "screenname": "network"},
-            {"name": "Slideshow", "screenname": "slideshow"},
-            {"name": "Breakout", "screenname": "breakout"},
-            {"name": "System", "screenname": "system"}
-        ]
 
     def setVisible(self, visible):
         print("MenuScreen.setVisible(%s)" % visible)
@@ -64,8 +53,9 @@ class MenuScreen(Screen):
         draw = ImageDraw.Draw(image)
         # draw.rectangle([(1,1),(127,10)],fill = "RED")
 
-        draw.text((35, 1), 'M E N U', fill=getTheme()["headline_color"], font=getTheme()["headlinefont"])
-        draw.line([(0, 18), (127, 18)], fill=getTheme()["headline_color"], width=3)
+        text_x = (self.LCD.width/2) - (len(self.menu_headline_text)*8)/2  # center headline text
+        draw.text((text_x, 1), self.menu_headline_text, fill=getTheme()["headline_color"], font=getTheme()["headlinefont"])
+        draw.line([(0, 18), (127, 18)], fill="BLACK", width=1)
 
         y_offset = 24
         for i in range(len(self.entries)):
@@ -77,19 +67,19 @@ class MenuScreen(Screen):
                     getTheme()["highlight_text_color"] if (self.currentline == i) else getTheme()["text_color"]),
                           font=getTheme()["font"])
                 if self.currentline == i:
-                    draw.line([(0, y_offset), (127, y_offset)], fill=getTheme()["highlight_text_color"], width=1)
-                    draw.line([(0, y_offset + 10), (127, y_offset + 10)], fill=getTheme()["highlight_text_color"],
+                    draw.line([(0, y_offset), (127, y_offset)], fill=getTheme()["cursor_color"], width=1)
+                    draw.line([(0, y_offset + 10), (127, y_offset + 10)], fill=getTheme()["cursor_color"],
                               width=1)
 
             y_offset += 12
 
-        draw.text((40, 110), datetime.datetime.now().strftime('%H:%M:%S'), fill=getTheme()["highlight_text_color"],
-                  font=getTheme()["clockfont"])
+        if self.show_clock:
+            draw.text((40, 110), datetime.datetime.now().strftime('%H:%M:%S'), fill=getTheme()["highlight_text_color"],
+                      font=getTheme()["clockfont"])
 
         self.screenManager.draw(image)
 
     def key(self, event):
-        global screenManager
         print("MenuScreen.key(): %s" % event)
         entry_count = len(self.entries)
         if event == "UP_RELEASED":
@@ -103,6 +93,7 @@ class MenuScreen(Screen):
             # self.currentline = (self.currentline + 1 ) % entry_count
             changeTheme("red")
         if event == "JOYSTICK_RELEASED":
+            print('MenuScreen.key(): ' + self.entries[self.currentline]["screenname"] )
             if self.entries[self.currentline]["screenname"] != "":
                 self.screenManager.switchToScreen(self.entries[self.currentline]["screenname"])
         if event == "KEY3_RELEASED":
