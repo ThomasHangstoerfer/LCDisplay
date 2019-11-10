@@ -11,6 +11,7 @@ import LCD_Config
 from PIL import Image, ImageDraw, ImageFont, ImageColor
 import RPi.GPIO as GPIO
 import time
+import utils
 from screen import Screen
 from menu_screen import MenuScreen
 from slideshow_screen import SlideshowScreen
@@ -196,6 +197,7 @@ def main():
             time.sleep(1)
     except KeyboardInterrupt:
         print("KeyboardInterrupt")
+        utils.cpu_load.stop()
         screens[currentscreen].setVisible(False)
 
 if __name__ == '__main__':

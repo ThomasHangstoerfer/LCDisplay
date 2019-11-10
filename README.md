@@ -7,7 +7,14 @@
 </table>
 <br>
 <br>
-<img src="doc/breakout.png" style="width: 127px;"></img>
+<table>
+    <tr>
+        <td><img src="doc/main.png" style="width: 127px;"/></td>
+        <td><img src="doc/network.png" style="width: 127px;"/></td>
+        <td><img src="doc/system.png" style="width: 127px;"/></td>
+        <td><img src="doc/breakout.png" style="width: 127px;"/></td>
+    </tr>
+</table>
 <br>
 <br>
 pip3 install paho-mqtt

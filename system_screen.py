@@ -30,6 +30,8 @@ class SystemScreen(Screen):
         self.LCD = LCD
         self.screenManager = screenManager
         self.currentline = 0
+        self.dynamic_y_axis = False
+        self.take_screenshot = False
         self.entries = [
             {"name": "Reboot", "screenname": "reboot"},
             {"name": "Shutdown", "screenname": "shutdown"}
@@ -53,17 +55,24 @@ class SystemScreen(Screen):
         self.update()
 
     def drawGraph(self, draw):
-        graph_height = 45
-        draw.rectangle([(1, 35), (127, 35 + graph_height)], fill=(50, 50, 50, 70))
+        graph_height = 65
+        graph_top_y = 35
+        draw.rectangle([(1, graph_top_y), (127, graph_top_y + graph_height)], fill=(50, 50, 50, 255))
         # last value is displayed on the right -> add new values at the end of the list
-        load = [0.5, 0.7, 0.3, 0.2, 0.5, 0.2, 0.8, 1.1, 1.0, 1.4, 1.8, 2.0, 0.9, 0.8]
+        # load = [0.5, 0.7, 0.3, 0.2, 0.5, 0.2, 0.8, 1.1, 1.0, 1.4, 1.8, 2.0, 0.9, 0.8]
         # load = [0.5, 0.25, 1.0]
+        load = utils.cpu_load.history
+        if len(load) <= 0:
+            return
         cur_x = 115
         bar_width = 10
-        factor = graph_height / max(load)
+        if self.dynamic_y_axis:
+            factor = graph_height / max(load)
+        else:
+            factor = 1.0
         print('factor ', factor)
         for i in reversed(range(len(load))):
-            draw.rectangle([(cur_x, 80-(load[i]*factor)), (cur_x+bar_width, 80)], fill=(150, 150, 250, 128))
+            draw.rectangle([(cur_x, max(graph_top_y, graph_top_y+graph_height-(load[i]*factor))), (cur_x+bar_width, graph_top_y+graph_height)], fill=(150, 150, 250, 255))
             cur_x -= bar_width
             if cur_x < 0:
                 break
@@ -88,7 +97,7 @@ class SystemScreen(Screen):
 
         self.drawGraph(draw)
 
-        y_offset = 84
+        y_offset = 104
         for i in range(len(self.entries)):
             if self.entries[i]["name"] != "":
                 o = 0
@@ -104,10 +113,18 @@ class SystemScreen(Screen):
 
             y_offset += 12
 
-        draw.text((40, 110), datetime.datetime.now().strftime('%H:%M:%S'), fill=getTheme()["highlight_text_color"],
-                  font=getTheme()["clockfont"])
+        # draw.text((40, 110), datetime.datetime.now().strftime('%H:%M:%S'), fill=getTheme()["highlight_text_color"],
+        #           font=getTheme()["clockfont"])
+
+        if self.take_screenshot:
+            image.save('screenshot.png')
+            draw.text((15, 60), 'Screenshot saved', fill=getTheme()["headline_color"])
 
         self.LCD.LCD_ShowImage(image, 0, 0)
+
+        if self.take_screenshot:
+            time.sleep(2)
+            self.take_screenshot = False
 
     def key(self, event):
         global screenManager
@@ -128,4 +145,7 @@ class SystemScreen(Screen):
                 utils.reboot()
             if self.entries[self.currentline]["screenname"] == "shutdown":
                 utils.shutdown()
+        if event == "KEY3_RELEASED":
+            print('self.take_screenshot = True')
+            self.take_screenshot = True
         self.update()

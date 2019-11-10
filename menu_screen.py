@@ -7,6 +7,7 @@
 import LCD_1in44
 import LCD_Config
 import datetime
+import time
 import math
 from PIL import Image, ImageDraw, ImageFont, ImageColor
 from themes import getTheme as getTheme
@@ -24,6 +25,7 @@ class MenuScreen(Screen):
         super(MenuScreen, self).__init__()
         # print("MenuScreen.MenuScreen() ")
         self.LCD = LCD
+        self.take_screenshot = False
         self.screenManager = screenManager
         self.currentline = 0
         self.entries = [
@@ -85,7 +87,15 @@ class MenuScreen(Screen):
         draw.text((40, 110), datetime.datetime.now().strftime('%H:%M:%S'), fill=getTheme()["highlight_text_color"],
                   font=getTheme()["clockfont"])
 
+        if self.take_screenshot:
+            image.save('screenshot.png')
+            draw.text((15, 60), 'Screenshot saved', fill=getTheme()["headline_color"])
+
         self.LCD.LCD_ShowImage(image, 0, 0)
+
+        if self.take_screenshot:
+            time.sleep(2)
+            self.take_screenshot = False
 
     def key(self, event):
         global screenManager
@@ -104,5 +114,7 @@ class MenuScreen(Screen):
         if event == "JOYSTICK_RELEASED":
             if self.entries[self.currentline]["screenname"] != "":
                 self.screenManager.switchToScreen(self.entries[self.currentline]["screenname"])
-        print("theme[text_color] " + getTheme()["text_color"])
+        if event == "KEY3_RELEASED":
+            print('self.take_screenshot = True')
+            self.take_screenshot = True
         self.update()

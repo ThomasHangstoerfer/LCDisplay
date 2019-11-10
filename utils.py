@@ -10,8 +10,9 @@ import os
 import subprocess
 import sys
 import re
-bl_power_file = "/sys/class/backlight/rpi_backlight/bl_power"
+import psutil  # for cpu-load
 
+bl_power_file = "/sys/class/backlight/rpi_backlight/bl_power"
 
 def singleton(cls):
     # https://stackoverflow.com/questions/31875/is-there-a-simple-elegant-way-to-define-singletons
@@ -141,6 +142,42 @@ def reboot():
         pass
 
 
+class CPULoad:
+    def __init__(self):
+        self.history = []
+        self.max_measurement_count = 12
+        self.update_timeout = 2
+        self.timer = None
+        self.is_running = False
+        self.is_started = False
+
+    def start(self):
+        print('CPULoad.start() ', self.is_running)
+        self.is_started = True
+        if not self.is_running:
+            self.timer = Timer(self.update_timeout, self.timer_expired)
+            self.timer.start()
+            self.measure_cpu_load()
+            self.is_running = True
+
+    def stop(self):
+        print('CPULoad.stop()')
+        self.is_started = False
+        self.timer.cancel()
+        self.is_running = False
+
+    def timer_expired(self):
+        self.timer.cancel()
+        if self.is_started:
+            self.timer = Timer(self.update_timeout, self.timer_expired)
+            self.timer.start()
+        self.measure_cpu_load()
+
+    def measure_cpu_load(self):
+        print('CPULoad.measure_cpu_load()')
+        self.history.append(psutil.cpu_percent())
+        while len(self.history) > self.max_measurement_count:
+            self.history.pop(0)
 
 
 class RepeatedTimer(object):
@@ -189,3 +226,5 @@ class RepeatedTimer(object):
         self.to_be_stopped = True
         self.stop()
 
+cpu_load = CPULoad()
+cpu_load.start()
