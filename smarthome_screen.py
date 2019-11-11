@@ -61,15 +61,21 @@ class SmarthomeScreen(Screen):
             self.update_timer.start()
             self.update()
             print("connecting to broker")
-            self.mqtt_client.connect(self.mqtt_broker)
-            self.mqtt_client.loop_start()
-            self.mqtt_client.subscribe("house/bulbs/bulb1")
-            self.mqtt_client.publish("house/bulbs/bulb1","OFF")
+            try:
+                self.mqtt_client.connect(self.mqtt_broker)
+                self.mqtt_client.loop_start()
+                self.mqtt_client.subscribe("house/bulbs/bulb1")
+                self.mqtt_client.publish("house/bulbs/bulb1","OFF")
+            except:
+                print('Exception in mqtt-connection')
 
         if not visible and self.isVisible():
-            self.update_timer.cancel()
-            self.mqtt_client.disconnect()
-            self.mqtt_client.loop_stop()
+            try:
+                self.update_timer.cancel()
+                self.mqtt_client.disconnect()
+                self.mqtt_client.loop_stop()
+            except:
+                print('Exceptions while disconnecting mqtt-client')
 
         super(SmarthomeScreen, self).setVisible(visible)
 

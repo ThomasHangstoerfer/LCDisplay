@@ -20,10 +20,10 @@ from threading import Timer
 import utils
 
 
-class NetworkStatusScreen(Screen):
+class NetworkWifiScreen(Screen):
     def __init__(self, LCD, screenManager):
-        super(NetworkStatusScreen, self).__init__()
-        #print("NetworkStatusScreen.NetworkStatusScreen() ")
+        super(NetworkWifiScreen, self).__init__()
+        #print("NetworkWifiScreen.NetworkStatusScreen() ")
         self.screenManager = screenManager
         self.currentline = 0
         self.bitrate = 0
@@ -34,24 +34,24 @@ class NetworkStatusScreen(Screen):
 
 
     def setVisible(self, visible):
-        print("NetworkStatusScreen.setVisible(%s)" % visible)
+        print("NetworkWifiScreen.setVisible(%s)" % visible)
         if (visible and not self.isVisible() ):
             self.t = Timer(1, self.updateTimeout)
             self.t.start()
             self.update()
         if (not visible and self.isVisible() ):
             self.t.cancel()
-        super(NetworkStatusScreen, self).setVisible(visible)
+        super(NetworkWifiScreen, self).setVisible(visible)
 
     def updateTimeout(self):
-        #print("NetworkStatusScreen.updateTimeout() %s" % self.isVisible())
+        #print("NetworkWifiScreen.updateTimeout() %s" % self.isVisible())
         self.t.cancel()
         self.t = Timer(1, self.updateTimeout)
         self.t.start()
         self.update()
 
     def update(self):
-        #print("NetworkStatusScreen.update() %s" % self.isVisible())
+        #print("NetworkWifiScreen.update() %s" % self.isVisible())
         if (not self.isVisible()):
             return
 
@@ -79,44 +79,12 @@ class NetworkStatusScreen(Screen):
 
         draw.text((5, 1), 'N E T W O R K', fill=getTheme()["headline_color"], font=getTheme()["headlinefont"])
         draw.line([(0,18),(127,18)], fill="BLACK", width=1)
-        draw.text((1, 30 ), 'Hostname:  ' + utils.get_hostname(), fill="BLACK")
-        count = len(netifaces.interfaces())
-        width_per_i = math.floor(127 / count)
-        print('count: %i' % count)
-        print('width_per_i: ' + str(width_per_i))
-        print('selected_interface: ' + str(self.selected_interface))
-        try:
-            print('interfaces: ', netifaces.interfaces())
-            addresses = netifaces.ifaddresses(netifaces.interfaces()[self.selected_interface])
-            print('addresses', addresses)
-            if netifaces.AF_INET in addresses:
-                ip4addresses = addresses[netifaces.AF_INET]
-                for a in range(len(ip4addresses)):
-                    print('ifaddresses: ', ip4addresses[a]['addr'])
-                    draw.text((1, 42 + a * 10), 'IPv4: ' + ip4addresses[a]['addr'], fill="BLACK")
-            else:
-                print('no netifaces.AF_INET in addresses')
-                draw.text((1, 42 ), 'No IPv4 addresses ', fill="BLACK")
-                draw.text((1, 52 ), 'assigned ', fill="BLACK")
-
-            for i in range(count):
-                iname = netifaces.interfaces()[i]
-                # print('iname: ', iname)
-                
-                # tab background
-                draw.rectangle([(i*width_per_i, 110), (i*width_per_i+width_per_i-2, 127)], fill=(50, 50, 50, 128))
-
-                # tab text
-                draw.text((i*width_per_i, 114),
-                            str(iname),
-                            fill=(getTheme()["highlight_text_color"] if i == self.selected_interface else getTheme()["text_color"]),
-                            font=getTheme()["font"])
-
-            # cursor-line over active tab
-            draw.line([(self.selected_interface*width_per_i, 110), (self.selected_interface*width_per_i+width_per_i-2, 110)],
-                        fill=getTheme()["cursor_color"])
-        except:
-            print('Exception in NetworkStatusScreen.update()')
+        draw.text((1, 24), self.essid, fill=getTheme()["highlight_text_color"], font=getTheme()["headlinefont"])
+        draw.text((1, 42), 'Quality: ' + str(self.quality) + '% ' + str(self.bitrate) + "" + self.bitrate_unit, fill=("BLACK" if (self.currentline==0) else "BLUE"))
+        draw.text((1, 54), 'IP: ' + utils.get_ip_address(), fill=("BLACK" if (self.currentline==0) else "BLUE"))
+        # draw.text((1, 66), 'CPU: ' + utils.get_cpu_temp(), fill=("BLACK" if (self.currentline==0) else "BLUE"))
+        draw.text((1, 78), 'Hostname: ' + utils.get_hostname(), fill=("BLACK" if (self.currentline==0) else "BLUE"))
+        # draw.text((1, 78), 'Make: ' + utils.get_make_running(), fill = "WHITE")
 
         self.screenManager.draw(image)
 

@@ -62,7 +62,6 @@ def get_key_event(input_pin):
         else:
             print("Key1 released")
             key_event = 'KEY1_RELEASED'
-            self.switchToScreen("menu")
 
     if input_pin == KEY2_PIN:
         if GPIO.input(KEY2_PIN) == 0:

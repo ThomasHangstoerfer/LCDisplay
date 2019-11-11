@@ -24,6 +24,7 @@ from system_screen import SystemScreen
 from smarthome_screen import SmarthomeScreen
 from network_menu_screen import NetworkMenuScreen
 from network_status_screen import NetworkStatusScreen
+from network_wifi_screen import NetworkWifiScreen
 from screen_manager import ScreenManager
 from keys import KEY_UP_PIN, KEY_DOWN_PIN, KEY_LEFT_PIN, KEY_RIGHT_PIN, KEY_PRESS_PIN, KEY1_PIN, KEY2_PIN, KEY3_PIN
 
@@ -56,9 +57,10 @@ screenManager.addScreen("webcam", WebcamScreen(LCD, screenManager))
 screenManager.addScreen("breakout", BreakoutScreen(LCD, screenManager))
 screenManager.addScreen("system", SystemScreen(LCD, screenManager))
 screenManager.addScreen("network_menu", NetworkMenuScreen(LCD, screenManager))
+screenManager.addScreen("network_wifi", NetworkWifiScreen(LCD, screenManager))
 
-#screenManager.switchToScreen("menu")
-screenManager.switchToScreen("system")
+screenManager.switchToScreen("menu")
+#screenManager.switchToScreen("system")
 
 
 def handle_key_event(input_pin):
