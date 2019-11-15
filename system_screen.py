@@ -4,8 +4,6 @@
 # License: MIT
 #
 
-import LCD_1in44
-import LCD_Config
 import datetime
 import time
 import cv2
@@ -25,10 +23,9 @@ import utils
 
 
 class SystemScreen(Screen):
-    def __init__(self, LCD, screenManager):
+    def __init__(self, screenManager):
         super(SystemScreen, self).__init__()
         # print("SystemScreen.SystemScreen() ")
-        self.LCD = LCD
         self.screenManager = screenManager
         self.currentline = 0
         self.dynamic_y_axis = False
@@ -81,8 +78,6 @@ class SystemScreen(Screen):
         # print("SystemScreen.update() %s" % self.isVisible())
         if not self.isVisible():
             return
-        # self.LCD.LCD_Clear()
-        # image = Image.new("RGB", (self.LCD.width, self.LCD.height), "WHITE")
         image = getTheme()["background_image"].copy()
         draw = ImageDraw.Draw(image)
         # draw.rectangle([(1,1),(127,10)],fill = "RED")

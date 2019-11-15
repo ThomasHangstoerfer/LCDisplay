@@ -4,8 +4,6 @@
 # License: MIT
 #
 
-import LCD_1in44
-import LCD_Config
 import datetime
 
 from PIL import Image,ImageDraw,ImageFont,ImageColor,ImageOps
@@ -21,10 +19,9 @@ from os import listdir
 #t.join()
 
 class CamScreen(Screen):
-    def __init__(self, LCD, screenManager):
+    def __init__(self, screenManager):
         super(CamScreen, self).__init__()
         #print("CamScreen.CamScreen() ")
-        self.LCD = LCD
         self.isPlaying = False
         self.screenManager = screenManager
         self.currentimage = -1
@@ -66,7 +63,7 @@ class CamScreen(Screen):
         except:
             pass
         if len(loadedImages) <= 0:
-            image = Image.new("RGB", (self.LCD.width, self.LCD.height), "BLACK")
+            image = Image.new("RGB", (self.screenManager.screen_width, self.screenManager.screen_height), "BLACK")
             draw = ImageDraw.Draw(image)
             draw.text((35, 40), 'NO IMAGES', fill = "BLUE")
             self.screenManager.draw(image)

@@ -17,10 +17,9 @@ from threading import Timer
 from menu_screen import MenuScreen
 
 class MainMenuScreen(MenuScreen):
-    def __init__(self, LCD, screenManager):
-        super(MainMenuScreen, self).__init__(LCD, screenManager)
+    def __init__(self, screenManager):
+        super(MainMenuScreen, self).__init__(screenManager)
         # print("MainMenuScreen.MainMenuScreen() ")
-        self.LCD = LCD
         self.screenManager = screenManager
         self.currentline = 0
         self.show_clock = False

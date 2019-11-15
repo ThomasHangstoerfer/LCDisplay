@@ -4,8 +4,6 @@
 # License: MIT
 #
 
-import LCD_1in44
-import LCD_Config
 import datetime
 import time
 import math
@@ -17,11 +15,9 @@ from threading import Timer
 from menu_screen import MenuScreen
 
 class NetworkMenuScreen(MenuScreen):
-    def __init__(self, LCD, screenManager):
-        # super(NetworkMenuScreen, self, LCD, screenManager).__init__()
-        super(NetworkMenuScreen, self).__init__(LCD, screenManager)
+    def __init__(self, screenManager):
+        super(NetworkMenuScreen, self).__init__(screenManager)
         # print("MenuScreen.MenuScreen() ")
-        self.LCD = LCD
         self.screenManager = screenManager
         self.currentline = 0
         self.menu_headline_text = 'N E T W O R K'

@@ -4,8 +4,6 @@
 # License: MIT
 #
 
-import LCD_1in44
-import LCD_Config
 import datetime
 import time
 import cv2
@@ -22,11 +20,10 @@ from themes import getTheme as getTheme
 # t.join()
 
 class WebcamScreen(Screen):
-    def __init__(self, LCD, screenManager):
+    def __init__(self, screenManager):
         super(WebcamScreen, self).__init__()
         # print("WebcamScreen.WebcamScreen() ")
         self.imagepath = '/home/pi/'
-        self.LCD = LCD
         self.screenManager = screenManager
         self.currentimage = 0
         self.camera = None

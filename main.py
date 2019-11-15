@@ -48,16 +48,16 @@ LCD.LCD_Clear()
 
 screenManager = ScreenManager(LCD, GPIO)
 
-screenManager.addScreen("menu", MainMenuScreen(LCD, screenManager))
-screenManager.addScreen("smarthome", SmarthomeScreen(LCD, screenManager))
-screenManager.addScreen("network_status", NetworkStatusScreen(LCD, screenManager))
-screenManager.addScreen("slideshow", SlideshowScreen(LCD, screenManager))
-screenManager.addScreen("cam", CamScreen(LCD, screenManager))
-screenManager.addScreen("webcam", WebcamScreen(LCD, screenManager))
-screenManager.addScreen("breakout", BreakoutScreen(LCD, screenManager))
-screenManager.addScreen("system", SystemScreen(LCD, screenManager))
-screenManager.addScreen("network_menu", NetworkMenuScreen(LCD, screenManager))
-screenManager.addScreen("network_wifi", NetworkWifiScreen(LCD, screenManager))
+screenManager.addScreen("menu", MainMenuScreen(screenManager))
+screenManager.addScreen("smarthome", SmarthomeScreen(screenManager))
+screenManager.addScreen("network_status", NetworkStatusScreen(screenManager))
+screenManager.addScreen("slideshow", SlideshowScreen(screenManager))
+screenManager.addScreen("cam", CamScreen(screenManager))
+screenManager.addScreen("webcam", WebcamScreen(screenManager))
+screenManager.addScreen("breakout", BreakoutScreen(screenManager))
+screenManager.addScreen("system", SystemScreen(screenManager))
+screenManager.addScreen("network_menu", NetworkMenuScreen(screenManager))
+screenManager.addScreen("network_wifi", NetworkWifiScreen(screenManager))
 
 screenManager.switchToScreen("menu")
 #screenManager.switchToScreen("system")
@@ -90,11 +90,12 @@ def main():
             time.sleep(1)
     except KeyboardInterrupt:
         print("KeyboardInterrupt")
+        global screenManager
         utils.cpu_load.stop()
-        screens[currentscreen].setVisible(False)
+        screenManager.shutdown()
         image = Image.new("RGB", (LCD.width, LCD.height), "BLACK")
         draw = ImageDraw.Draw(image)
-        LCD.LCD_ShowImage(image,0,0)
+        LCD.LCD_ShowImage(image, 0, 0)
         GPIO.cleanup()
 
 

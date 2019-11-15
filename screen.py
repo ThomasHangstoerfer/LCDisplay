@@ -25,4 +25,4 @@ class Screen(object):
         pass
 
     def key(self, event):
-        print("key " % event)
+        print("Screen.key() " % event)

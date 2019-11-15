@@ -4,8 +4,6 @@
 # License: MIT
 #
 
-import LCD_1in44
-import LCD_Config
 import datetime
 import time
 import cv2
@@ -111,10 +109,9 @@ class Bat:
 
 
 class BreakoutScreen(Screen):
-    def __init__(self, LCD, screenManager):
+    def __init__(self, screenManager):
         super(BreakoutScreen, self).__init__()
         # print("BreakoutScreen.BreakoutScreen() ")
-        self.LCD = LCD
         self.screenManager = screenManager
         self.screenTimer = None
         self.updateScreenTime = 0.2

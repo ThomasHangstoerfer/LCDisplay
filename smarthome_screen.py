@@ -1,5 +1,3 @@
-import LCD_1in44
-import LCD_Config
 import datetime
 import time
 import paho.mqtt.client as mqtt #import the client1
@@ -35,10 +33,9 @@ async def hello():
 
 asyncio.get_event_loop().run_until_complete(hello())
 class SmarthomeScreen(Screen):
-    def __init__(self, LCD, screenManager):
+    def __init__(self, screenManager):
         super(SmarthomeScreen, self).__init__()
         #print("SmarthomeScreen.SmarthomeScreen() ")
-        self.LCD = LCD
         self.screenManager = screenManager
         self.currentline = 0
         self.big_font = ImageFont.truetype('/usr/share/fonts/truetype/freefont/FreeMonoBold.ttf', 15)
@@ -90,7 +87,6 @@ class SmarthomeScreen(Screen):
         # print("SmarthomeScreen.update() %s" % self.isVisible())
         if not self.isVisible():
             return
-        # image = Image.new("RGB", (self.LCD.width, self.LCD.height), "WHITE")
         image = getTheme()["background_image"].copy()
         draw = ImageDraw.Draw(image)
 

@@ -4,8 +4,6 @@
 # License: MIT
 #
 
-import LCD_1in44
-import LCD_Config
 import datetime
 import time
 import math
@@ -17,10 +15,9 @@ from threading import Timer
 
 
 class MenuScreen(Screen):
-    def __init__(self, LCD, screenManager):
+    def __init__(self, screenManager):
         super(MenuScreen, self).__init__()
         # print("MenuScreen.MenuScreen() ")
-        self.LCD = LCD
         self.screenManager = screenManager
         self.menu_headline_text = 'M E N U'
         self.show_clock = False
@@ -47,13 +44,11 @@ class MenuScreen(Screen):
         # print("MenuScreen.update() %s" % self.isVisible())
         if not self.isVisible():
             return
-        # self.LCD.LCD_Clear()
-        # image = Image.new("RGB", (self.LCD.width, self.LCD.height), "WHITE")
         image = getTheme()["background_image"].copy()
         draw = ImageDraw.Draw(image)
         # draw.rectangle([(1,1),(127,10)],fill = "RED")
 
-        text_x = (self.LCD.width/2) - (len(self.menu_headline_text)*8)/2  # center headline text
+        text_x = (self.screenManager.screen_width/2) - (len(self.menu_headline_text)*8)/2  # center headline text
         draw.text((text_x, 1), self.menu_headline_text, fill=getTheme()["headline_color"], font=getTheme()["headlinefont"])
         draw.line([(0, 18), (127, 18)], fill="BLACK", width=1)
 

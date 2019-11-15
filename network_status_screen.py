@@ -4,8 +4,6 @@
 # License: MIT
 #
 
-import LCD_1in44
-import LCD_Config
 import datetime
 import time
 import netifaces
@@ -21,7 +19,7 @@ import utils
 
 
 class NetworkStatusScreen(Screen):
-    def __init__(self, LCD, screenManager):
+    def __init__(self, screenManager):
         super(NetworkStatusScreen, self).__init__()
         #print("NetworkStatusScreen.NetworkStatusScreen() ")
         self.screenManager = screenManager

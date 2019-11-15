@@ -19,6 +19,8 @@ class ScreenManager(object):
 
     def __init__(self, LCD, GPIO):
         self.LCD = LCD
+        self.screen_width = self.LCD.width
+        self.screen_height = self.LCD.height
         self.GPIO = GPIO
         self.take_screenshot = False
         self.screens = {}
@@ -53,6 +55,10 @@ class ScreenManager(object):
         if self.take_screenshot:
             time.sleep(2)
             self.take_screenshot = False
+
+    def shutdown(self):
+        self.screens[self.currentscreen].setVisible(False)
+        self.currentscreen = None
 
     def handle_key_event(self, input_pin):
         print("ScreenManager.handle_key_event: %s currentscreen: %s " % (input_pin, self.currentscreen))
