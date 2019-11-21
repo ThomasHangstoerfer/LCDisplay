@@ -79,7 +79,7 @@ class NetworkStatusScreen(Screen):
         draw.line([(0,18),(127,18)], fill="BLACK", width=1)
         draw.text((1, 30 ), 'Hostname:  ' + utils.get_hostname(), fill="BLACK")
         count = len(netifaces.interfaces())
-        width_per_i = math.floor(127 / count)
+        width_per_i = math.floor(self.screenManager.screen_width / count)
         print('count: %i' % count)
         print('width_per_i: ' + str(width_per_i))
         print('selected_interface: ' + str(self.selected_interface))

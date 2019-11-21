@@ -12,6 +12,7 @@ import math
 from PIL import Image,ImageDraw,ImageFont,ImageColor
 from themes import getTheme as getTheme
 from themes import changeTheme as changeTheme
+from popup import Popup
 
 from screen import Screen
 from threading import Timer
@@ -19,17 +20,18 @@ import utils
 
 
 class NetworkWifiScreen(Screen):
+
     def __init__(self, screenManager):
         super(NetworkWifiScreen, self).__init__()
-        #print("NetworkWifiScreen.NetworkStatusScreen() ")
+        #print("NetworkWifiScreen.NetworkWifiScreen() ")
         self.screenManager = screenManager
         self.currentline = 0
         self.bitrate = 0
         self.bitrate_unit = ""
         self.quality = 0
         self.essid = ""
-        self.selected_interface = 0
-
+        self.selected_item = 0
+        self.menu_items = ['Mode', 'Test']
 
     def setVisible(self, visible):
         print("NetworkWifiScreen.setVisible(%s)" % visible)
@@ -75,33 +77,74 @@ class NetworkWifiScreen(Screen):
             #self.source = 'gfx/wifi0.png'
             print('WifiState.update(): ', e)
 
-        draw.text((5, 1), 'N E T W O R K', fill=getTheme()["headline_color"], font=getTheme()["headlinefont"])
+        menu_headline_text = 'W I F I'
+        text_x = (self.screenManager.screen_width/2) - (len(menu_headline_text)*8)/2  # center headline text
+        draw.text((text_x, 1), menu_headline_text, fill=getTheme()["headline_color"], font=getTheme()["headlinefont"])
         draw.line([(0,18),(127,18)], fill="BLACK", width=1)
-        draw.text((1, 24), self.essid, fill=getTheme()["highlight_text_color"], font=getTheme()["headlinefont"])
-        draw.text((1, 42), 'Quality: ' + str(self.quality) + '% ' + str(self.bitrate) + "" + self.bitrate_unit, fill=("BLACK" if (self.currentline==0) else "BLUE"))
-        draw.text((1, 54), 'IP: ' + utils.get_ip_address(), fill=("BLACK" if (self.currentline==0) else "BLUE"))
-        # draw.text((1, 66), 'CPU: ' + utils.get_cpu_temp(), fill=("BLACK" if (self.currentline==0) else "BLUE"))
-        draw.text((1, 78), 'Hostname: ' + utils.get_hostname(), fill=("BLACK" if (self.currentline==0) else "BLUE"))
-        # draw.text((1, 78), 'Make: ' + utils.get_make_running(), fill = "WHITE")
+        mode_text = 'Access Point' if utils.get_wifi_mode() == 'ap' else 'Wifi-Client' if utils.get_wifi_mode() == 'client' else 'unknown'
+        draw.text((1, 24), 'Mode   : ' + mode_text, fill=getTheme()["highlight_text_color"])
+
+        if utils.get_wifi_mode() == 'ap':
+            draw.text((1, 34), 'SSID   : ' + utils.get_ap_ssid(), fill=getTheme()["highlight_text_color"])
+            draw.text((1, 44), 'Pwd    : ' + utils.get_ap_password(), fill=getTheme()["highlight_text_color"])
+            draw.text((1, 54), 'Clients: 0', fill=getTheme()["highlight_text_color"])
+
+        else:
+            draw.text((1, 34), 'SSID:  : ' + self.essid, fill=getTheme()["highlight_text_color"])
+            draw.text((1, 44), 'Quality: ' + str(self.quality) + '% ' + str(self.bitrate) + "" + self.bitrate_unit, fill=getTheme()["highlight_text_color"])
+            draw.text((1, 54), 'IP: ' + utils.get_ip_address(), fill=getTheme()["highlight_text_color"])
+
+        count = len(self.menu_items)
+        width_per_i = math.floor(self.screenManager.screen_width / count)
+        
+        for i in range(count):
+            iname = self.menu_items[i]
+            # print('iname: ', iname)
+            
+            # tab background
+            draw.rectangle([(i*width_per_i, 110), (i*width_per_i+width_per_i-2, 127)], fill=(50, 50, 50, 128))
+
+            # tab text
+            draw.text((i*width_per_i, 114),
+                        str(iname),
+                        fill=(getTheme()["highlight_text_color"] if i == self.selected_item else getTheme()["text_color"]),
+                        font=getTheme()["font"])
+
+        # cursor-line over active tab
+        draw.line([(self.selected_item*width_per_i, 110), (self.selected_item*width_per_i+width_per_i-2, 110)],
+                    fill=getTheme()["cursor_color"])
 
         self.screenManager.draw(image)
 
+    def popupAction(self, action):
+        print("NetworkWifiScreen.popupAction(%s)" % action)
+        self.screenManager.popup = None
+        # self.screenManager.popup.text = 'Switching mode'
+        utils.switch_wifi_mode(action.lower())
+
     def key(self, event):
-        print("NetworkStatusScreen.key(): %s" % event)
-        icount = len(netifaces.interfaces())
-        if ( event == "UP_RELEASED" ):
-            self.currentline = (self.currentline - 1 ) % 1
-        if ( event == "DOWN_RELEASED" ):
-            self.currentline = (self.currentline + 1 ) % 1
-        if ( event == "LEFT_RELEASED" ):
-            self.selected_interface = (self.selected_interface - 1 ) % icount
-        if ( event == "RIGHT_RELEASED" ):
-            self.selected_interface = (self.selected_interface + 1 ) % icount
-        if ( event == "JOYSTICK_RELEASED" ):
-            # self.screenManager.switchToScreen("menu")
-            pass
-        if event == "KEY3_RELEASED":
-            print('self.screenManager.take_screenshot = True')
-            self.screenManager.take_screenshot = True
-        self.update()
+            print("NetworkWifiScreen.key(): %s" % event)
+            icount = len(self.menu_items)
+            if ( event == "UP_RELEASED" ):
+                self.currentline = (self.currentline - 1 ) % 1
+            if ( event == "DOWN_RELEASED" ):
+                self.currentline = (self.currentline + 1 ) % 1
+            if ( event == "LEFT_RELEASED" ):
+                self.selected_item = (self.selected_item - 1 ) % icount
+            if ( event == "RIGHT_RELEASED" ):
+                self.selected_item = (self.selected_item + 1 ) % icount
+            if ( event == "JOYSTICK_RELEASED" ):
+                # self.screenManager.switchToScreen("menu")
+                print('Create popup')
+                popup = Popup()
+                popup.text = 'Switch mode?'
+                popup.actions = ['AP', 'Client']
+                popup.actionCallback = self.popupAction
+                self.screenManager.popup = popup
+
+                pass
+            if event == "KEY3_RELEASED":
+                print('self.screenManager.take_screenshot = True')
+                self.screenManager.take_screenshot = True
+            self.update()
 

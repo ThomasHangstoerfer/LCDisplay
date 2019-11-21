@@ -8,6 +8,7 @@ from socket import socket, AF_INET, SOCK_DGRAM
 from threading import Timer
 import os
 import subprocess
+import traceback
 import sys
 import re
 import psutil  # for cpu-load
@@ -75,6 +76,70 @@ def get_hostname():
     except:
         pass
     return hostname
+
+
+
+def get_wifi_mode():
+    #print("get_wifi_mode()")
+    mode = ""
+    try:
+        output = subprocess.run(['/home/pi/LCDisplay/conf/wifi_mode.sh', 'mode'], stdout=subprocess.PIPE).stdout.decode('utf-8')
+        mode = output.rstrip()
+        # print('get_wifi_mode(): ' + mode)
+
+    except Exception as e:
+        print("except", sys.exc_info()[0])
+        print(traceback.format_exc())
+        pass
+    return mode
+
+def switch_wifi_mode(mode):
+    print("switch_wifi_mode(%s)" % mode)
+    try:
+        output = subprocess.run(['/home/pi/LCDisplay/conf/wifi_mode.sh', mode], stdout=subprocess.PIPE).stdout.decode('utf-8')
+        mode = output.rstrip()
+        print('switch_wifi_mode(): ' + mode)
+
+    except Exception as e:
+        print("except", sys.exc_info()[0])
+        print(traceback.format_exc())
+        pass
+    return mode
+
+
+
+def get_ap_ssid():
+    # print("get_ap_ssid()")
+    ssid = ""
+    try:
+        ps = subprocess.Popen(('grep', 'ssid', '/etc/hostapd/hostapd.conf'), stdout=subprocess.PIPE)
+        output = subprocess.check_output(('cut', '-d', '=', '-f', '2'), stdin=ps.stdout).decode('utf-8')
+        ps.wait()
+        ssid = output.rstrip()
+        # print('get_ap_ssid(): ' + ssid)
+
+    except Exception as e:
+        print("except", sys.exc_info()[0])
+        print(traceback.format_exc())
+        pass
+    return ssid
+
+def get_ap_password():
+    # print("get_ap_password()")
+    password = ""
+    try:
+        ps = subprocess.Popen(('grep', '^wpa_passphrase', '/etc/hostapd/hostapd.conf'), stdout=subprocess.PIPE)
+        output = subprocess.check_output(('cut', '-d', '=', '-f', '2'), stdin=ps.stdout).decode('utf-8')
+        ps.wait()
+        password = output.rstrip()
+        # print('get_ap_password(): ' + password)
+
+    except Exception as e:
+        print("except", sys.exc_info()[0])
+        print(traceback.format_exc())
+        pass
+    return password
+
 
 
 def get_make_running():

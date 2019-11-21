@@ -47,7 +47,10 @@ class ScreenManager(object):
             draw.text((15, 60), 'Screenshot saved', fill=getTheme()["headline_color"])
 
         if self.popup is not None:
+            image = Image.eval(image, lambda x: x/3) # dim image below popup
             draw = ImageDraw.Draw(image)
+            # draw.rectangle([(50, 50), (127, 127)], fill=(0, 0, 0, 100))
+
             self.popup.draw(draw)
 
         self.LCD.LCD_ShowImage(image, 0, 0)
@@ -66,9 +69,11 @@ class ScreenManager(object):
         key_event = get_key_event(input_pin)
         if key_event == 'KEY1_RELEASED':
             self.switchToScreen('menu')
+            self.popup = None
         else:
             if self.popup is not None:
                 # TODO pass keyevent to popup
+                self.popup.key(key_event)
                 pass
             else:
                 self.screens[self.currentscreen].key(key_event)
