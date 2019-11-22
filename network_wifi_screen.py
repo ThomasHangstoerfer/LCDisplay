@@ -125,14 +125,19 @@ class NetworkWifiScreen(Screen):
     def key(self, event):
             print("NetworkWifiScreen.key(): %s" % event)
             icount = len(self.menu_items)
+            handled = False
             if ( event == "UP_RELEASED" ):
                 self.currentline = (self.currentline - 1 ) % 1
+                handled = True
             if ( event == "DOWN_RELEASED" ):
                 self.currentline = (self.currentline + 1 ) % 1
+                handled = True
             if ( event == "LEFT_RELEASED" ):
                 self.selected_item = (self.selected_item - 1 ) % icount
+                handled = True
             if ( event == "RIGHT_RELEASED" ):
                 self.selected_item = (self.selected_item + 1 ) % icount
+                handled = True
             if ( event == "JOYSTICK_RELEASED" ):
                 # self.screenManager.switchToScreen("menu")
                 print('Create popup')
@@ -140,11 +145,14 @@ class NetworkWifiScreen(Screen):
                 popup.text = 'Switch mode?'
                 popup.actions = ['AP', 'Client']
                 popup.actionCallback = self.popupAction
-                self.screenManager.popup = popup
+                self.screenManager.addPopup(popup)
+                handled = True
 
                 pass
             if event == "KEY3_RELEASED":
                 print('self.screenManager.take_screenshot = True')
                 self.screenManager.take_screenshot = True
+                handled = True
             self.update()
+            return handled
 

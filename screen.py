@@ -14,7 +14,7 @@ class Screen(object):
         pass
 
     def setVisible(self, visible):
-        print("Screen.setVisible(%s)" % visible)
+        # print("Screen.setVisible(%s)" % visible)
         self.isVisible_ = visible
         self.update()
 

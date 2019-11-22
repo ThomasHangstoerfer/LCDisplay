@@ -28,15 +28,16 @@ class ScreenManager(object):
         self.popup = None
         pass
 
-    def addScreen(self, name, screen):
-        self.screens[name] = screen
+    def addScreen(self, name, screen, parent_screen='menu'):
+        self.screens[name] = {'screen': screen, 'parent_screen': parent_screen}
+        print(self.screens['menu']['parent_screen'])
 
     def switchToScreen(self, screen):
         print('ScreenManager.switchToScreen(%s)' % screen)
-        if screen in self.screens and self.screens[screen] is not None:
-            self.screens[self.currentscreen].setVisible(False)
+        if screen in self.screens and self.screens[screen]['screen'] is not None:
+            self.screens[self.currentscreen]['screen'].setVisible(False)
             self.currentscreen = screen
-            self.screens[self.currentscreen].setVisible(True)
+            self.screens[self.currentscreen]['screen'].setVisible(True)
         else:
             print('ScreenManager.switchToScreen() invalid screen %s' % screen)
 
@@ -59,23 +60,38 @@ class ScreenManager(object):
             time.sleep(2)
             self.take_screenshot = False
 
+    def update(self):
+        self.screens[self.currentscreen]['screen'].update()
+
     def shutdown(self):
-        self.screens[self.currentscreen].setVisible(False)
+        self.screens[self.currentscreen]['screen'].setVisible(False)
         self.currentscreen = None
 
     def handle_key_event(self, input_pin):
-        print("ScreenManager.handle_key_event: %s currentscreen: %s " % (input_pin, self.currentscreen))
+        print("\n\n\nScreenManager.handle_key_event: %s currentscreen: %s " % (input_pin, self.currentscreen))
 
         key_event = get_key_event(input_pin)
+        if key_event == '':
+            print('ignored key_event')
+            return
         if key_event == 'KEY1_RELEASED':
             self.switchToScreen('menu')
             self.popup = None
         else:
             if self.popup is not None:
-                # TODO pass keyevent to popup
                 self.popup.key(key_event)
-                pass
             else:
-                self.screens[self.currentscreen].key(key_event)
+                handled = self.screens[self.currentscreen]['screen'].key(key_event)
+                if not handled:
+                    print('key was not handled by currentscreen')
+                    if key_event == 'KEY2_RELEASED':
+                        self.switchToScreen(self.screens[self.currentscreen]['parent_screen'])
 
         # self.screens[self.currentscreen].update()
+
+    def addPopup(self, newpopup):
+        newpopup.screen_manager = self
+        self.popup = newpopup
+
+    def clearPopup(self):
+        self.popup = None

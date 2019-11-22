@@ -120,20 +120,27 @@ class NetworkStatusScreen(Screen):
 
     def key(self, event):
         print("NetworkStatusScreen.key(): %s" % event)
+        handled = False
         icount = len(netifaces.interfaces())
         if ( event == "UP_RELEASED" ):
             self.currentline = (self.currentline - 1 ) % 1
+            handled = True
         if ( event == "DOWN_RELEASED" ):
             self.currentline = (self.currentline + 1 ) % 1
+            handled = True
         if ( event == "LEFT_RELEASED" ):
             self.selected_interface = (self.selected_interface - 1 ) % icount
+            handled = True
         if ( event == "RIGHT_RELEASED" ):
             self.selected_interface = (self.selected_interface + 1 ) % icount
+            handled = True
         if ( event == "JOYSTICK_RELEASED" ):
             # self.screenManager.switchToScreen("menu")
             pass
         if event == "KEY3_RELEASED":
             print('self.screenManager.take_screenshot = True')
             self.screenManager.take_screenshot = True
+            handled = True
         self.update()
+        return handled
 

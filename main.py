@@ -49,18 +49,18 @@ LCD.LCD_Clear()
 screenManager = ScreenManager(LCD, GPIO)
 
 screenManager.addScreen("menu", MainMenuScreen(screenManager))
-screenManager.addScreen("smarthome", SmarthomeScreen(screenManager))
-screenManager.addScreen("network_status", NetworkStatusScreen(screenManager))
-screenManager.addScreen("slideshow", SlideshowScreen(screenManager))
-screenManager.addScreen("cam", CamScreen(screenManager))
-screenManager.addScreen("webcam", WebcamScreen(screenManager))
+#screenManager.addScreen("smarthome", SmarthomeScreen(screenManager))
+screenManager.addScreen("network_status", NetworkStatusScreen(screenManager), 'network_menu')
+#screenManager.addScreen("slideshow", SlideshowScreen(screenManager))
+#screenManager.addScreen("cam", CamScreen(screenManager))
+#screenManager.addScreen("webcam", WebcamScreen(screenManager))
 screenManager.addScreen("breakout", BreakoutScreen(screenManager))
 screenManager.addScreen("system", SystemScreen(screenManager))
 screenManager.addScreen("network_menu", NetworkMenuScreen(screenManager))
-screenManager.addScreen("network_wifi", NetworkWifiScreen(screenManager))
+screenManager.addScreen("network_wifi", NetworkWifiScreen(screenManager), 'network_menu')
 
-screenManager.switchToScreen("menu")
-#screenManager.switchToScreen("system")
+#screenManager.switchToScreen("menu")
+screenManager.switchToScreen("network_wifi")
 
 
 def handle_key_event(input_pin):

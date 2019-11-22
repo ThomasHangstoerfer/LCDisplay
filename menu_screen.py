@@ -24,7 +24,7 @@ class MenuScreen(Screen):
         self.currentline = 0
 
     def setVisible(self, visible):
-        print("MenuScreen.setVisible(%s)" % visible)
+        # print("MenuScreen.setVisible(%s)" % visible)
         if visible and not self.isVisible():
             self.t = Timer(1, self.updateTimeout)
             self.t.start()
@@ -75,7 +75,7 @@ class MenuScreen(Screen):
         self.screenManager.draw(image)
 
     def key(self, event):
-        print("MenuScreen.key(): %s" % event)
+        # print("MenuScreen.key(): %s" % event)
         entry_count = len(self.entries)
         if event == "UP_RELEASED":
             self.currentline = (self.currentline - 1) % entry_count
@@ -88,10 +88,10 @@ class MenuScreen(Screen):
             # self.currentline = (self.currentline + 1 ) % entry_count
             changeTheme("red")
         if event == "JOYSTICK_RELEASED":
-            print('MenuScreen.key(): ' + self.entries[self.currentline]["screenname"] )
+            # print('MenuScreen.key(): ' + self.entries[self.currentline]["screenname"] )
             if self.entries[self.currentline]["screenname"] != "":
                 self.screenManager.switchToScreen(self.entries[self.currentline]["screenname"])
         if event == "KEY3_RELEASED":
-            print('self.take_screenshot = True')
+            # print('self.take_screenshot = True')
             self.screenManager.take_screenshot = True
         self.update()

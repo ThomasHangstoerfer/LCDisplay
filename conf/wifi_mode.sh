@@ -27,9 +27,9 @@ fi
 
 if [ "$1" = "ap" ]; then
     echo "Switching to AccessPoint mode"
-    cp ${SCRIPT_DIR}/dhcpcd.conf.wlan_ap /etc/
-    cp ${SCRIPT_DIR}/dnsmasq.conf.wlan_ap /etc/
-    cp ${SCRIPT_DIR}/hostapd.conf /etc/hostapd
+    cp ${SCRIPT_DIR}/dhcpcd.conf.wlan_ap /etc/dhcpcd.conf
+    cp ${SCRIPT_DIR}/dnsmasq.conf.wlan_ap /etc/dhcpcd.conf
+    cp ${SCRIPT_DIR}/hostapd.conf /etc/hostapd/hostapd.conf
     chmod 600 /etc/hostapd/hostapd.conf
     
     sed -i "s/ssid=.*/ssid="${HOSTNAME}"/" /etc/hostapd/hostapd.conf
@@ -42,9 +42,9 @@ if [ "$1" = "ap" ]; then
     
 elif [ "$1" = "client" ]; then
     echo "Switching to Client mode"
-    cp ${SCRIPT_DIR}/dhcpcd.conf.wlan_client /etc/
-    cp ${SCRIPT_DIR}/dnsmasq.conf.wlan_client /etc/
-    #cp ${SCRIPT_DIR}/hostapd.conf /etc/hostapd
+    cp ${SCRIPT_DIR}/dhcpcd.conf.wlan_client /etc/dhcpcd.conf
+    cp ${SCRIPT_DIR}/dnsmasq.conf.wlan_client /etc/dnsmasq.conf
+    #cp ${SCRIPT_DIR}/hostapd.conf /etc/hostapd/hostapd.conf
 
     systemctl restart dnsmasq
     systemctl enable dnsmasq
