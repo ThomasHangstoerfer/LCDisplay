@@ -33,7 +33,7 @@ def drawBackground(theme_name):
             b = outerColor[2] * distanceToCenter + innerColor[2] * (1 - distanceToCenter)
 
             # Place the pixel
-            image.putpixel((x, y), (int(r), int(g), int(b)))
+            image.putpixel((x, y), (int(r), int(g), int(b), 255))
 
     return image
 
